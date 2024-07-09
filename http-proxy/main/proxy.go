@@ -3,6 +3,7 @@ package main
 import (
 	"bufio"
 	"context"
+	"crypto/tls"
 	"flag"
 	"fmt"
 	"github.com/libp2p/go-libp2p"
@@ -62,10 +63,14 @@ func streamHandler(stream network.Stream) {
 	}
 	defer req.Body.Close()
 
+	client := &http.Client{}
 	req.URL.Scheme = "http"
 	hp := strings.Split(req.Host, ":")
 	if len(hp) > 1 && hp[1] == "443" {
 		req.URL.Scheme = "https"
+		client.Transport = &http.Transport{
+			TLSClientConfig: &tls.Config{InsecureSkipVerify: true},
+		}
 	}
 	req.URL.Host = req.Host
 
@@ -73,7 +78,8 @@ func streamHandler(stream network.Stream) {
 	*outreq = *req
 
 	fmt.Printf("Making request to %s \n", req.URL)
-	resp, err := http.DefaultClient.Do(outreq)
+
+	resp, err := client.Do(outreq)
 	if err != nil {
 		stream.Reset()
 		return
