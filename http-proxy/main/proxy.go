@@ -14,6 +14,7 @@ import (
 	manet "github.com/multiformats/go-multiaddr/net"
 	"io"
 	"net/http"
+	"strings"
 )
 
 const Protocol = "/proxy-example/0.0.1"
@@ -53,6 +54,32 @@ func addAddrToPeerstore(h host.Host, addr string) peer.ID {
 func streamHandler(stream network.Stream) {
 	defer stream.Close()
 
+	buf := bufio.NewReader(stream)
+	req, err := http.ReadRequest(buf)
+	if err != nil {
+		stream.Reset()
+		return
+	}
+	defer req.Body.Close()
+
+	req.URL.Scheme = "http"
+	hp := strings.Split(req.Host, ":")
+	if len(hp) > 1 && hp[1] == "443" {
+		req.URL.Scheme = "https"
+	}
+	req.URL.Host = req.Host
+
+	outreq := new(http.Request)
+	*outreq = *req
+
+	fmt.Printf("Making request to %s \n", req.URL)
+	resp, err := http.DefaultTransport.RoundTrip(outreq)
+	if err != nil {
+		stream.Reset()
+		return
+	}
+
+	resp.Write(stream)
 }
 
 type ProxyService struct {
