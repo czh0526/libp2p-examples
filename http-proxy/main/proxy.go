@@ -73,6 +73,7 @@ func streamHandler(stream network.Stream) {
 		}
 	}
 	req.URL.Host = req.Host
+	req.RequestURI = ""
 
 	outreq := new(http.Request)
 	*outreq = *req
