@@ -81,6 +81,7 @@ func streamHandler(stream network.Stream) {
 	resp, err := client.Do(outreq)
 	if err != nil {
 		stream.Reset()
+		fmt.Printf("Failed to make request to %s, err = %v \n", req.URL, err)
 		return
 	}
 	fmt.Printf("resp = %v \n", resp)
