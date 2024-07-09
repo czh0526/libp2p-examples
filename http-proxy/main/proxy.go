@@ -93,6 +93,7 @@ func (p *ProxyService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	defer stream.Close()
+	fmt.Println("NewStream finished.")
 
 	err = r.Write(stream)
 	if err != nil {
@@ -100,6 +101,7 @@ func (p *ProxyService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 		return
 	}
+	fmt.Println("Write request finished.")
 
 	buf := bufio.NewReader(stream)
 	resp, err := http.ReadResponse(buf, r)
@@ -108,6 +110,7 @@ func (p *ProxyService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
 		return
 	}
+	fmt.Println("Read response finished.")
 
 	for k, v := range resp.Header {
 		for _, s := range v {
