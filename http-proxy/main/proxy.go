@@ -106,6 +106,7 @@ func (p *ProxyService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		stream.Reset()
 		http.Error(w, err.Error(), http.StatusServiceUnavailable)
+		return
 	}
 
 	for k, v := range resp.Header {
