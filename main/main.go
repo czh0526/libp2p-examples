@@ -4,7 +4,10 @@ import (
 	"context"
 	"fmt"
 	"github.com/libp2p/go-libp2p"
+	dht "github.com/libp2p/go-libp2p-kad-dht"
+	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/routing"
 	"github.com/libp2p/go-libp2p/p2p/protocol/ping"
 	"github.com/multiformats/go-multiaddr"
 	"os"
@@ -15,11 +18,24 @@ import (
 func main() {
 	node, err := libp2p.New(
 		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/2000"),
-		libp2p.Ping(false))
+		libp2p.Ping(false),
+		libp2p.NATPortMap(),
+		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
+			idht, err := dht.New(context.Background(), h)
+			return idht, err
+		}),
+		libp2p.EnableNATService())
 	if err != nil {
 		panic(err)
 	}
 	fmt.Printf("Listen addresses: %v \n", node.Addrs())
+
+	ctx := context.Background()
+	for _, addr := range dht.DefaultBootstrapPeers {
+		pi, _ := peer.AddrInfoFromP2pAddr(addr)
+		err = node.Connect(ctx, *pi)
+		fmt.Printf("connect failed: %v\n", err)
+	}
 
 	pingService := &ping.PingService{Host: node}
 	node.SetStreamHandler(ping.ID, pingService.PingHandler)
