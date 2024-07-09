@@ -78,12 +78,12 @@ func streamHandler(stream network.Stream) {
 	*outreq = *req
 
 	fmt.Printf("Making request to %s \n", req.URL)
-
 	resp, err := client.Do(outreq)
 	if err != nil {
 		stream.Reset()
 		return
 	}
+	fmt.Printf("resp = %v \n", resp)
 
 	resp.Write(stream)
 }
