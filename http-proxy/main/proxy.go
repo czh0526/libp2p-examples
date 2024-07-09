@@ -73,7 +73,7 @@ func streamHandler(stream network.Stream) {
 	*outreq = *req
 
 	fmt.Printf("Making request to %s \n", req.URL)
-	resp, err := http.DefaultTransport.RoundTrip(outreq)
+	resp, err := http.DefaultClient.Do(outreq)
 	if err != nil {
 		stream.Reset()
 		return
