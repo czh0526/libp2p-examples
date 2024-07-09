@@ -20,7 +20,7 @@ const Protocol = "/proxy-example/0.0.1"
 
 func makeRandomHost(port int) host.Host {
 	host, err := libp2p.New(
-		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", port)))
+		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", port)))
 	if err != nil {
 		panic(fmt.Sprintf("Failed to create libp2p random host: %v", err))
 	}
