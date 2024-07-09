@@ -1,6 +1,6 @@
 module github.com/czh0526/libp2p-examples
 
-go 1.22.4
+go 1.21.4
 
 require (
 	github.com/libp2p/go-libp2p v0.35.2
