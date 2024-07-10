@@ -104,10 +104,16 @@ type ProxyService struct {
 }
 
 func (p *ProxyService) String() string {
+
+	proxyAddrStr := ""
+	if p.proxyAddr != nil {
+		proxyAddrStr = p.proxyAddr.String()
+	}
+
 	data := map[string]string{
 		"host":      p.host.ID().String(),
 		"dest":      p.dest.String(),
-		"proxyAddr": p.proxyAddr.String(),
+		"proxyAddr": proxyAddrStr,
 	}
 
 	jsonData, _ := json.MarshalIndent(data, "", "\t")
