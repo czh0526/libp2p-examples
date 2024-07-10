@@ -6,6 +6,7 @@ import (
 	"crypto/tls"
 	"flag"
 	"fmt"
+	"github.com/czh0526/libp2p-examples/utils"
 	"github.com/libp2p/go-libp2p"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
@@ -21,16 +22,21 @@ import (
 const Protocol = "/proxy-example/0.0.1"
 
 func makeRandomHost(port int) host.Host {
-	host, err := libp2p.New(
+	key, err := utils.GeneratePrivateKey("privkey.pem")
+	if err != nil {
+		panic(fmt.Sprintf("Failed to generate private key: %s", err))
+	}
+	h, err := libp2p.New(
+		libp2p.Identity(key),
 		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", port)))
 	if err != nil {
 		panic(fmt.Sprintf("Failed to create libp2p random host: %v", err))
 	}
 
-	return host
+	return h
 }
 
-func addAddrToPeerstore(h host.Host, addr string) peer.ID {
+func addAddrToPeerStore(h host.Host, addr string) peer.ID {
 	ipfsaddr, err := ma.NewMultiaddr(addr)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to make multiaddr: %v", err))
@@ -185,8 +191,10 @@ func main() {
 	flag.Parse()
 
 	if *destPeer != "" {
+		// 代理前端
 		host := makeRandomHost(*p2pport + 1)
-		destPeerID := addAddrToPeerstore(host, *destPeer)
+		destPeerID := addAddrToPeerStore(host, *destPeer)
+		fmt.Printf("peer id = %v \n", destPeerID)
 		proxyAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", *port))
 		if err != nil {
 			panic(err)
@@ -195,6 +203,7 @@ func main() {
 		proxy.Serve()
 
 	} else {
+		// 代理后端
 		host := makeRandomHost(*p2pport)
 
 		_ = NewProxyService(host, nil, "")
