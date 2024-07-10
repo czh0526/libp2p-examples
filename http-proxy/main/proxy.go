@@ -21,8 +21,8 @@ import (
 
 const Protocol = "/proxy-example/0.0.1"
 
-func makeRandomHost(port int) host.Host {
-	key, err := utils.GeneratePrivateKey("privkey.pem")
+func makeRandomHost(port int, keyFilename string) host.Host {
+	key, err := utils.GeneratePrivateKey(keyFilename)
 	if err != nil {
 		panic(fmt.Sprintf("Failed to generate private key: %s", err))
 	}
@@ -192,7 +192,7 @@ func main() {
 
 	if *destPeer != "" {
 		// 代理前端
-		host := makeRandomHost(*p2pport + 1)
+		host := makeRandomHost(*p2pport+1, "frontend.pem")
 		destPeerID := addAddrToPeerStore(host, *destPeer)
 		fmt.Printf("peer id = %v \n", destPeerID)
 		proxyAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", *port))
@@ -204,7 +204,7 @@ func main() {
 
 	} else {
 		// 代理后端
-		host := makeRandomHost(*p2pport)
+		host := makeRandomHost(*p2pport, "backend.pem")
 
 		_ = NewProxyService(host, nil, "")
 		<-make(chan struct{})
