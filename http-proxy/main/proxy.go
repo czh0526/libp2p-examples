@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"context"
 	"crypto/tls"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"github.com/czh0526/libp2p-examples/utils"
@@ -19,7 +20,7 @@ import (
 	"strings"
 )
 
-const Protocol = "/proxy-example/0.0.1"
+const Protocol = "/http-proxy/0.0.1"
 
 func makeRandomHost(port int, keyFilename string) host.Host {
 	key, err := utils.GeneratePrivateKey(keyFilename)
@@ -102,13 +103,24 @@ type ProxyService struct {
 	proxyAddr ma.Multiaddr
 }
 
+func (p *ProxyService) String() string {
+	data := map[string]string{
+		"host":      p.host.ID().String(),
+		"dest":      p.dest.String(),
+		"proxyAddr": p.proxyAddr.String(),
+	}
+
+	jsonData, _ := json.MarshalIndent(data, "", "\t")
+	return string(jsonData)
+}
+
 func NewProxyService(h host.Host, proxyAddr ma.Multiaddr, dest peer.ID) *ProxyService {
 	h.SetStreamHandler(Protocol, streamHandler)
 
 	fmt.Println("Proxy service is ready")
 	fmt.Println("libp2p-peer addresses: ")
 	for _, a := range h.Addrs() {
-		fmt.Printf("%s/ipfs/%s\n", a, h.ID())
+		fmt.Printf("\t=> %s/ipfs/%s\n", a, h.ID())
 	}
 
 	return &ProxyService{
@@ -122,7 +134,11 @@ func (p *ProxyService) Serve() {
 	_, serveArgs, _ := manet.DialArgs(p.proxyAddr)
 	fmt.Println("Proxy listening on ", serveArgs)
 	if p.dest != "" {
-		http.ListenAndServe(serveArgs, p)
+		err := http.ListenAndServe(serveArgs, p)
+		if err != nil {
+			panic(fmt.Sprintf("listen and server failed: %v", err))
+		}
+
 	}
 }
 
@@ -130,12 +146,11 @@ func (p *ProxyService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	fmt.Printf("proxying request for %s to peer %s \n", r.URL, p.dest)
 	stream, err := p.host.NewStream(context.Background(), p.dest, Protocol)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		return
+		panic(fmt.Sprintf("Failed to create stream: %v", err))
 	}
-	defer stream.Close()
-	fmt.Println("NewStream finished.")
+	fmt.Println("Create stream successfully")
 
+	buf := bufio.NewReader(stream)
 	err = r.Write(stream)
 	if err != nil {
 		stream.Reset()
@@ -144,7 +159,6 @@ func (p *ProxyService) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	fmt.Println("Write request finished.")
 
-	buf := bufio.NewReader(stream)
 	resp, err := http.ReadResponse(buf, r)
 	if err != nil {
 		stream.Reset()
@@ -195,18 +209,23 @@ func main() {
 		host := makeRandomHost(*p2pport+1, "frontend.pem")
 		destPeerID := addAddrToPeerStore(host, *destPeer)
 		fmt.Printf("peer id = %v \n", destPeerID)
+
 		proxyAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/127.0.0.1/tcp/%d", *port))
 		if err != nil {
 			panic(err)
 		}
+		fmt.Printf("proxy addr = %v\n", proxyAddr)
+
 		proxy := NewProxyService(host, proxyAddr, destPeerID)
+		fmt.Printf("create proxy => %v\n", proxy)
 		proxy.Serve()
 
 	} else {
 		// 代理后端
 		host := makeRandomHost(*p2pport, "backend.pem")
 
-		_ = NewProxyService(host, nil, "")
+		proxy := NewProxyService(host, nil, "")
+		fmt.Printf("create proxy => %v\n", proxy)
 		<-make(chan struct{})
 	}
 }
