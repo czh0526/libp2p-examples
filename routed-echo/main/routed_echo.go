@@ -14,9 +14,12 @@ import (
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/p2p/discovery/routing"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
 	ma "github.com/multiformats/go-multiaddr"
 	"io"
+	"log"
+	"time"
 )
 
 func main() {
@@ -118,6 +121,16 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	err = dht.Bootstrap(ctx)
 	if err != nil {
 		return nil, err
+	}
+
+	// Wait for a bit to let the DHT bootstrap
+	time.Sleep(10 * time.Second)
+
+	// Set up discovery service
+	disc := routing.NewRoutingDiscovery(dht)
+	_, err = disc.Advertise(ctx, "routed-echo")
+	if err != nil {
+		log.Fatalf("Failed to advertise: %v", err)
 	}
 
 	// build host multiaddr
