@@ -18,19 +18,12 @@ import (
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
 	ma "github.com/multiformats/go-multiaddr"
 	"io"
-	mrand "math/rand"
 )
 
 func main() {
-	listenF := flag.Int("l", 0, "listen port")
 	target := flag.String("d", "", "target peer to dial")
-	seed := flag.Int64("seed", 0, "set random seed for id generation")
 	global := flag.Bool("global", false, "use global ipfs peers for bootstrapping")
 	flag.Parse()
-
-	if *listenF == 0 {
-		panic("Please provide a port to bind on with -l")
-	}
 
 	var bootstrapPeers []peer.AddrInfo
 	var globalFlag string
@@ -43,7 +36,7 @@ func main() {
 		bootstrapPeers = getLocalPeerInfo()
 		globalFlag = ""
 	}
-	ha, err := makeRoutedHost(*listenF, *seed, bootstrapPeers, globalFlag)
+	ha, err := makeRoutedHost(bootstrapPeers, globalFlag)
 	if err != nil {
 		panic(fmt.Sprintf("make routed host failed: err = %v", err))
 	}
@@ -87,23 +80,16 @@ func main() {
 	}
 }
 
-func makeRoutedHost(listenPort int, randSeed int64, bootstrapPeers []peer.AddrInfo,
+func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	globalFlag string) (host.Host, error) {
 
-	var r io.Reader
-	if randSeed == 0 {
-		r = rand.Reader
-	} else {
-		r = mrand.New(mrand.NewSource(randSeed))
-	}
-
+	r := rand.Reader
 	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.ECDSA, 2048, r)
 	if err != nil {
 		return nil, err
 	}
 
 	opts := []libp2p.Option{
-		libp2p.ListenAddrStrings(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", listenPort)),
 		libp2p.Identity(priv),
 		libp2p.DefaultTransports,
 		libp2p.DefaultMuxers,
@@ -145,8 +131,8 @@ func makeRoutedHost(listenPort int, randSeed int64, bootstrapPeers []peer.AddrIn
 	for _, addr := range addrs {
 		fmt.Printf("\t%s\n", addr.Encapsulate(hostAddr))
 	}
-	fmt.Printf("Now run `./routed-echo -l %d -d %s%s` on a different terminal\n",
-		listenPort+1, routedHost.ID(), globalFlag)
+	fmt.Printf("Now run `./routed-echo -d %s%s` on a different terminal\n",
+		routedHost.ID(), globalFlag)
 
 	return routedHost, nil
 }

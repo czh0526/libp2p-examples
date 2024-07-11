@@ -16,7 +16,7 @@ import (
 
 var (
 	IPFS_PEERS = convertPeers([]string{
-		"/ip4/9.134.4.207/tcp/4001/p2p/12D3KooWFGz2Ab4KANwbpTZUVWZf7d42ipJfPgLdP13NCryfhsZn",
+		"/ip4/9.134.4.207/tcp/4001/p2p/12D3KooWT2eBrh3wfuUmNMsyeqmcqRGg5weAspKVmeKzrmHWjNQ6",
 	})
 	LOCAL_PEER_ENDPOINT = "http://localhost:5001/api/v0/id"
 )
