@@ -132,6 +132,7 @@ func runSender(ctx context.Context, ha host.Host, targetPeer string) {
 		fmt.Printf("get addr info failed: err = %v\n", err)
 		return
 	}
+	// 能找到目标地址的关键
 	ha.Peerstore().AddAddrs(info.ID, info.Addrs, peerstore.PermanentAddrTTL)
 
 	fmt.Println("sender opening stream")
