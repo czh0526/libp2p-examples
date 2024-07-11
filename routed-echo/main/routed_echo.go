@@ -15,6 +15,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
+	ma "github.com/multiformats/go-multiaddr"
 	"io"
 	mrand "math/rand"
 )
@@ -131,6 +132,20 @@ func makeRoutedHost(listenPort int, randSeed int64, bootstrapPeers []peer.AddrIn
 	if err != nil {
 		return nil, err
 	}
+
+	// build host multiaddr
+	hostAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", routedHost.ID()))
+	if err != nil {
+		return nil, err
+	}
+
+	addrs := routedHost.Addrs()
+	fmt.Println("I can be reached at:")
+	for _, addr := range addrs {
+		fmt.Printf("\t%s\n", addr.Encapsulate(hostAddr))
+	}
+	fmt.Printf("Now run `./routed-echo -l %d %s%s` on a different terminal\n",
+		listenPort+1, routedHost.ID(), globalFlag)
 
 	return routedHost, nil
 }
