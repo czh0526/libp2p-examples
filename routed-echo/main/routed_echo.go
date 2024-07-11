@@ -33,7 +33,7 @@ func main() {
 		globalFlag = " -global"
 	} else {
 		fmt.Println("using local bootstrap")
-		bootstrapPeers = getLocalPeerInfo()
+		bootstrapPeers = LOCAL_PEERS
 		globalFlag = ""
 	}
 	ha, err := makeRoutedHost(bootstrapPeers, globalFlag)
