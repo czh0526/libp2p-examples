@@ -90,6 +90,7 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	}
 
 	opts := []libp2p.Option{
+		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/9900"),
 		libp2p.Identity(priv),
 		libp2p.DefaultTransports,
 		libp2p.DefaultMuxers,
