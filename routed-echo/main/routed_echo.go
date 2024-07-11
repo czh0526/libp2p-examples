@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"context"
 	"crypto/rand"
 	"flag"
@@ -144,12 +145,20 @@ func makeRoutedHost(listenPort int, randSeed int64, bootstrapPeers []peer.AddrIn
 	for _, addr := range addrs {
 		fmt.Printf("\t%s\n", addr.Encapsulate(hostAddr))
 	}
-	fmt.Printf("Now run `./routed-echo -l %d %s%s` on a different terminal\n",
+	fmt.Printf("Now run `./routed-echo -l %d -d %s%s` on a different terminal\n",
 		listenPort+1, routedHost.ID(), globalFlag)
 
 	return routedHost, nil
 }
 
 func doEcho(s network.Stream) error {
+	buf := bufio.NewReader(s)
+	str, err := buf.ReadString('\n')
+	if err != nil {
+		return err
+	}
+
+	fmt.Printf("read: %s\n", str)
+	_, err = s.Write([]byte(str))
 	return nil
 }
