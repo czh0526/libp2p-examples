@@ -14,7 +14,6 @@ import (
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
-	"github.com/libp2p/go-libp2p/core/protocol"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
 	ma "github.com/multiformats/go-multiaddr"
 	"io"
@@ -60,8 +59,8 @@ func main() {
 			panic(fmt.Sprintf("peer(`%v`) decode failed: err = %s", *target, err))
 		}
 
-		fmt.Println("opening stream:")
-		s, err := ha.NewStream(context.Background(), peerid, protocol.ID("/echo/1.0.0"))
+		fmt.Printf("opening stream => %v:/echo/1.0.0\n", peerid.String())
+		s, err := ha.NewStream(context.Background(), peerid, "/echo/1.0.0")
 		if err != nil {
 			panic(fmt.Sprintf("peer(`%v`) create stream failed: err = %v", *target, err))
 		}

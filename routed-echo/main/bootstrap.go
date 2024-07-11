@@ -89,6 +89,10 @@ func bootstrapConnect(ctx context.Context, ph host.Host, peers []peer.AddrInfo) 
 			fmt.Printf("%s bootstrapping to %s \n", ph.ID(), p.ID)
 
 			ph.Peerstore().AddAddrs(p.ID, p.Addrs, peerstore.PermanentAddrTTL)
+			fmt.Printf("%s connect to %s \n", ph.ID(), p)
+			for _, a := range p.Addrs {
+				fmt.Printf("\t addr => %s\n", a)
+			}
 			if err := ph.Connect(ctx, p); err != nil {
 				fmt.Printf("bootstrapDialFailed %s\n, err = %v \n", p.ID, err)
 				errs <- err
