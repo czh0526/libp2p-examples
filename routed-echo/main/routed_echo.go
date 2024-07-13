@@ -59,7 +59,7 @@ func main() {
 		if err != nil {
 			panic(fmt.Sprintf("peer(`%v`) decode failed: err = %s", *target, err))
 		}
-		fmt.Printf("peer decode => %s\n", peerid)
+		fmt.Printf("\nI want connect to => `%s`\n", peerid)
 
 		// 不停的尝试连接目标节点
 		var s network.Stream
