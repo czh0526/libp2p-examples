@@ -117,14 +117,14 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	dht := dht.NewDHT(ctx, basicHost, dstore)
 	routedHost := rhost.Wrap(basicHost, dht)
 
-	// connect to the ipfs nodes
-	err = bootstrapConnect(ctx, routedHost, bootstrapPeers)
+	// bootstrap the host
+	err = dht.Bootstrap(ctx)
 	if err != nil {
 		return nil, nil, err
 	}
 
-	// bootstrap the host
-	err = dht.Bootstrap(ctx)
+	// connect to the ipfs nodes
+	err = bootstrapConnect(ctx, routedHost, bootstrapPeers)
 	if err != nil {
 		return nil, nil, err
 	}
