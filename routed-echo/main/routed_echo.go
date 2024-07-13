@@ -59,11 +59,6 @@ func main() {
 		}
 		fmt.Printf("peer decode => %s\n", peerid)
 
-		_, err = dht.FindPeer(context.Background(), peerid)
-		if err != nil {
-			fmt.Printf("peer(`%v`) find peer failed: err = %s\n", *target, err)
-		}
-
 		// 不停的尝试连接目标节点
 		var s network.Stream
 		for {
@@ -132,17 +127,6 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 		return nil, nil, err
 	}
 
-	//// build host multiaddr
-	//hostAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", routedHost.ID()))
-	//if err != nil {
-	//	return nil, nil, err
-	//}
-	//
-	//addrs := routedHost.Addrs()
-	//fmt.Println("I can be reached at:")
-	//for _, addr := range addrs {
-	//	fmt.Printf("\t%s\n", addr.Encapsulate(hostAddr))
-	//}
 	fmt.Printf("Now run `./routed-echo -d %s%s` on a different terminal\n",
 		routedHost.ID(), globalFlag)
 
