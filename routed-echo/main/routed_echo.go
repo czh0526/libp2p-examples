@@ -58,11 +58,19 @@ func main() {
 		if err != nil {
 			panic(fmt.Sprintf("peer(`%v`) decode failed: err = %s", *target, err))
 		}
+		fmt.Printf("peer decode => %s\n", peerid)
 
-		fmt.Printf("opening stream => %v:/echo/1.0.0\n", peerid.String())
-		s, err := ha.NewStream(context.Background(), peerid, "/echo/1.0.0")
-		if err != nil {
-			panic(fmt.Sprintf("peer(`%v`) create stream failed: err = %v", *target, err))
+		// 不停的尝试连接目标节点
+		var s network.Stream
+		for {
+			fmt.Printf("opening stream => %v:/echo/1.0.0\n", peerid.String())
+			s, err = ha.NewStream(context.Background(), peerid, "/echo/1.0.0")
+			if err != nil {
+				fmt.Printf("peer(`%v`) create stream failed: err = %v \n", *target, err)
+				time.Sleep(3 * time.Second)
+				continue
+			}
+			break
 		}
 
 		_, err = s.Write([]byte("hello world!\n"))
@@ -119,8 +127,6 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	if err != nil {
 		return nil, nil, err
 	}
-
-	time.Sleep(time.Second * 30)
 
 	// build host multiaddr
 	hostAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", routedHost.ID()))
