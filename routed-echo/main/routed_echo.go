@@ -34,7 +34,7 @@ func main() {
 		bootstrapPeers = LOCAL_PEERS
 		globalFlag = ""
 	}
-	ha, dht, err := makeRoutedHost(bootstrapPeers, globalFlag)
+	ha, _, err := makeRoutedHost(bootstrapPeers, globalFlag)
 	if err != nil {
 		panic(fmt.Sprintf("make routed host failed: err = %v", err))
 	}
