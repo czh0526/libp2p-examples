@@ -14,9 +14,9 @@ import (
 var (
 	IPFS_PEERS = convertPeers([]string{
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmNnooDu7bfjPFoTZYxMNLWUQJyrVwtbZg5gBMjTezGAJN",
-		//"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
 		"/dnsaddr/bootstrap.libp2p.io/p2p/QmbLHAnMoJPWSCR5Zhtx6BHJX9KiKNN6tpvbUcqanj75Nb",
 		//"/dnsaddr/bootstrap.libp2p.io/p2p/QmcZf59bWwK5XFi76CZX8cbJ4BhTzzA3gU1ZjYZcYW3dwt",
+		//"/dnsaddr/bootstrap.libp2p.io/p2p/QmQCU2EcMqAqQPR2i9bChDtGNJchTbq5TbXJJ16u19uLTa",
 		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ", // mars.i.ipfs.io
 	})
 	LOCAL_PEERS = convertPeers([]string{
@@ -52,16 +52,10 @@ func bootstrapConnect(ctx context.Context, ph host.Host, peers []peer.AddrInfo) 
 		go func(p peer.AddrInfo) {
 			defer func() {
 				wg.Done()
-				fmt.Printf("bootstrap dial: host = %v, peer = %v \n", ph.ID(), p.ID)
 			}()
 
-			fmt.Printf("%s bootstrapping to %s \n", ph.ID(), p.ID)
-
+			fmt.Printf("local host connect to => `%s` \n", p)
 			ph.Peerstore().AddAddrs(p.ID, p.Addrs, peerstore.PermanentAddrTTL)
-			fmt.Printf("%s connect to %s \n", ph.ID(), p)
-			for _, a := range p.Addrs {
-				fmt.Printf("\t addr => %s\n", a)
-			}
 			if err := ph.Connect(ctx, p); err != nil {
 				fmt.Printf("bootstrapDialFailed %s\n, err = %v \n", p.ID, err)
 				errs <- err

@@ -51,6 +51,8 @@ func main() {
 		})
 
 		fmt.Println("Listening for connections")
+		fmt.Printf("Now run `./routed-echo -d %s%s` on a different terminal\n",
+			ha.ID(), globalFlag)
 		select {}
 	} else {
 		peerid, err := peer.Decode(*target)
@@ -62,7 +64,7 @@ func main() {
 		// 不停的尝试连接目标节点
 		var s network.Stream
 		for {
-			fmt.Printf("opening stream => %v:/echo/1.0.0\n", peerid.String())
+			fmt.Printf("opening stream(`/echo/1.0.0`) => %v\n", peerid.String())
 			s, err = ha.NewStream(context.Background(), peerid, "/echo/1.0.0")
 			if err != nil {
 				fmt.Printf("peer(`%v`) create stream failed: err = %v \n", *target, err)
@@ -126,9 +128,6 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	if err != nil {
 		return nil, nil, err
 	}
-
-	fmt.Printf("Now run `./routed-echo -d %s%s` on a different terminal\n",
-		routedHost.ID(), globalFlag)
 
 	return routedHost, dht, nil
 }
