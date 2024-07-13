@@ -123,6 +123,8 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 		return nil, nil, err
 	}
 
+	time.Sleep(5 * time.Second)
+
 	// connect to the ipfs nodes
 	err = bootstrapConnect(ctx, routedHost, bootstrapPeers)
 	if err != nil {
