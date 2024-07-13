@@ -20,7 +20,7 @@ var (
 		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ", // mars.i.ipfs.io
 	})
 	LOCAL_PEERS = convertPeers([]string{
-		"/ip4/9.134.4.207/tcp/4001/p2p/12D3KooWDsFhcv8nqdfNo33td5vdR57FDZ2SwsGVFCBxoLb7LSse",
+		"/ip4/9.134.4.207/tcp/4001/p2p/12D3KooWSAHUq5r795TTDNK4bUfFC7VkbGJr1nXD3meXL3MNRMcU",
 	})
 )
 
