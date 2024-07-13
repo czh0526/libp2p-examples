@@ -14,7 +14,6 @@ import (
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
-	ma "github.com/multiformats/go-multiaddr"
 	"io"
 	"time"
 )
@@ -102,7 +101,7 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	}
 
 	opts := []libp2p.Option{
-		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/9901"),
+		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/9900"),
 		libp2p.Identity(priv),
 		libp2p.DefaultTransports,
 		libp2p.DefaultMuxers,
@@ -133,17 +132,17 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 		return nil, nil, err
 	}
 
-	// build host multiaddr
-	hostAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", routedHost.ID()))
-	if err != nil {
-		return nil, nil, err
-	}
-
-	addrs := routedHost.Addrs()
-	fmt.Println("I can be reached at:")
-	for _, addr := range addrs {
-		fmt.Printf("\t%s\n", addr.Encapsulate(hostAddr))
-	}
+	//// build host multiaddr
+	//hostAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", routedHost.ID()))
+	//if err != nil {
+	//	return nil, nil, err
+	//}
+	//
+	//addrs := routedHost.Addrs()
+	//fmt.Println("I can be reached at:")
+	//for _, addr := range addrs {
+	//	fmt.Printf("\t%s\n", addr.Encapsulate(hostAddr))
+	//}
 	fmt.Printf("Now run `./routed-echo -d %s%s` on a different terminal\n",
 		routedHost.ID(), globalFlag)
 

@@ -40,39 +40,6 @@ func convertPeers(peers []string) []peer.AddrInfo {
 	return pinfos
 }
 
-type IdOutput struct {
-	ID              string
-	PublicKey       string
-	Addresses       []string
-	AgentVersion    string
-	ProtocolVersion string
-}
-
-//func getLocalPeerInfo() []peer.AddrInfo {
-//	resp, err := http.PostForm(LOCAL_PEER_ENDPOINT, nil)
-//	if err != nil {
-//		panic(fmt.Sprintf("get local peer info failed: err = %v", err))
-//	}
-//
-//	body, err := io.ReadAll(resp.Body)
-//	if err != nil {
-//		panic(fmt.Sprintf("read local peer info failed: err = %v", err))
-//	}
-//
-//	var js IdOutput
-//	err = json.Unmarshal(body, &js)
-//	if err != nil {
-//		panic(fmt.Sprintf("parse local peer info failed: err = %v", err))
-//	}
-//
-//	for _, addr := range js.Addresses {
-//		if addr[0:8] == "/ip4/127" {
-//			return convertPeers([]string{addr})
-//		}
-//	}
-//	return make([]peer.AddrInfo, 1)
-//}
-
 func bootstrapConnect(ctx context.Context, ph host.Host, peers []peer.AddrInfo) error {
 	if len(peers) < 1 {
 		return errors.New("not enough bootstrap peers")
