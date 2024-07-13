@@ -39,17 +39,17 @@ func main() {
 		panic(fmt.Sprintf("make routed host failed: err = %v", err))
 	}
 
-	ha.SetStreamHandler("/echo/1.0.0", func(s network.Stream) {
-		fmt.Printf("new echo stream from %s\n", s.Conn().RemotePeer())
-		if err := doEcho(s); err != nil {
-			fmt.Printf("echo failed: err = %v\n", err)
-			s.Reset()
-		} else {
-			s.Close()
-		}
-	})
-
 	if *target == "" {
+		ha.SetStreamHandler("/echo/1.0.0", func(s network.Stream) {
+			fmt.Printf("new echo stream from %s\n", s.Conn().RemotePeer())
+			if err := doEcho(s); err != nil {
+				fmt.Printf("echo failed: err = %v\n", err)
+				s.Reset()
+			} else {
+				s.Close()
+			}
+		})
+
 		fmt.Println("Listening for connections")
 		select {}
 	} else {
