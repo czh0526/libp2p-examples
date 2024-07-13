@@ -35,7 +35,7 @@ func main() {
 		bootstrapPeers = LOCAL_PEERS
 		globalFlag = ""
 	}
-	ha, _, err := makeRoutedHost(bootstrapPeers, globalFlag)
+	ha, dht, err := makeRoutedHost(bootstrapPeers, globalFlag)
 	if err != nil {
 		panic(fmt.Sprintf("make routed host failed: err = %v", err))
 	}
@@ -59,6 +59,11 @@ func main() {
 			panic(fmt.Sprintf("peer(`%v`) decode failed: err = %s", *target, err))
 		}
 		fmt.Printf("peer decode => %s\n", peerid)
+
+		_, err = dht.FindPeer(context.Background(), peerid)
+		if err != nil {
+			fmt.Printf("peer(`%v`) find peer failed: err = %s\n", *target, err)
+		}
 
 		// 不停的尝试连接目标节点
 		var s network.Stream
@@ -97,7 +102,7 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	}
 
 	opts := []libp2p.Option{
-		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/9900"),
+		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/9901"),
 		libp2p.Identity(priv),
 		libp2p.DefaultTransports,
 		libp2p.DefaultMuxers,
