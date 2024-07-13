@@ -11,12 +11,12 @@ import (
 	"github.com/libp2p/go-libp2p"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/libp2p/go-libp2p/core/crypto"
-	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
 	ma "github.com/multiformats/go-multiaddr"
 	"io"
+	"time"
 )
 
 func main() {
@@ -35,7 +35,7 @@ func main() {
 		bootstrapPeers = LOCAL_PEERS
 		globalFlag = ""
 	}
-	ha, err := makeRoutedHost(bootstrapPeers, globalFlag)
+	ha, _, err := makeRoutedHost(bootstrapPeers, globalFlag)
 	if err != nil {
 		panic(fmt.Sprintf("make routed host failed: err = %v", err))
 	}
@@ -80,12 +80,12 @@ func main() {
 }
 
 func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
-	globalFlag string) (host.Host, error) {
+	globalFlag string) (*rhost.RoutedHost, *dht.IpfsDHT, error) {
 
 	r := rand.Reader
 	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.ECDSA, 2048, r)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	opts := []libp2p.Option{
@@ -100,7 +100,7 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	ctx := context.Background()
 	basicHost, err := libp2p.New(opts...)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// make the routed host
@@ -111,19 +111,21 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	// connect to the ipfs nodes
 	err = bootstrapConnect(ctx, routedHost, bootstrapPeers)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	// bootstrap the host
 	err = dht.Bootstrap(ctx)
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
+
+	time.Sleep(time.Second * 30)
 
 	// build host multiaddr
 	hostAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ipfs/%s", routedHost.ID()))
 	if err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 
 	addrs := routedHost.Addrs()
@@ -134,7 +136,7 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	fmt.Printf("Now run `./routed-echo -d %s%s` on a different terminal\n",
 		routedHost.ID(), globalFlag)
 
-	return routedHost, nil
+	return routedHost, dht, nil
 }
 
 func doEcho(s network.Stream) error {
