@@ -6,10 +6,8 @@ import (
 	"crypto/rand"
 	"flag"
 	"fmt"
-	ds "github.com/ipfs/go-datastore"
-	dsync "github.com/ipfs/go-datastore/sync"
 	"github.com/libp2p/go-libp2p"
-	dht "github.com/libp2p/go-libp2p-kad-dht"
+	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
@@ -89,7 +87,7 @@ func main() {
 }
 
 func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
-	globalFlag string) (*rhost.RoutedHost, *dht.IpfsDHT, error) {
+	globalFlag string) (*rhost.RoutedHost, *kaddht.IpfsDHT, error) {
 
 	r := rand.Reader
 	priv, _, err := crypto.GenerateKeyPairWithReader(crypto.ECDSA, 2048, r)
@@ -113,8 +111,12 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	}
 
 	// make the routed host
-	dstore := dsync.MutexWrap(ds.NewMapDatastore())
-	dht := dht.NewDHT(ctx, basicHost, dstore)
+	//dstore := dsync.MutexWrap(ds.NewMapDatastore())
+	//dht := dht.NewDHT(ctx, basicHost, dstore)
+	dht, err := kaddht.New(ctx, basicHost)
+	if err != nil {
+		return nil, nil, fmt.Errorf("new dht failed: err = %v", err)
+	}
 	routedHost := rhost.Wrap(basicHost, dht)
 
 	// bootstrap the host
