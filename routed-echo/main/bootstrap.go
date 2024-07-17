@@ -20,7 +20,7 @@ var (
 		"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ", // mars.i.ipfs.io
 	})
 	LOCAL_PEERS = convertPeers([]string{
-		"/ip4/9.134.4.207/tcp/9000/p2p/QmWUvA8a3YiPaMQZ8GGGfCJBFqk8AhwGaRQ9QymTtrXQdn",
+		"/ip4/9.134.4.207/tcp/4001/p2p/QmWUvA8a3YiPaMQZ8GGGfCJBFqk8AhwGaRQ9QymTtrXQdn",
 		// It's ok
 		//"/ip4/104.131.131.82/tcp/4001/p2p/QmaCpDMGvV2BGHeYERUEnRQAwe3N8SzbUtfsmvsqQLuvuJ",
 	})
@@ -57,7 +57,7 @@ func bootstrapConnect(ctx context.Context, ph host.Host, peers []peer.AddrInfo) 
 			fmt.Printf("local host connect to => `%s` \n", p)
 			ph.Peerstore().AddAddrs(p.ID, p.Addrs, peerstore.PermanentAddrTTL)
 			if err := ph.Connect(ctx, p); err != nil {
-				fmt.Printf("bootstrapDialFailed %s\n, err = %v \n", p.ID, err)
+				fmt.Printf("bootstrapDialFailed %s, err = %v \n", p.ID, err)
 				errs <- err
 				return
 			}
