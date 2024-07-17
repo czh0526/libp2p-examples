@@ -11,7 +11,7 @@ func GeneratePrivateKey(filename string) (crypto.PrivKey, error) {
 	if err != nil {
 		if os.IsNotExist(err) {
 			privateKey, _, err := crypto.GenerateKeyPair(
-				crypto.Ed25519, -1)
+				crypto.ECDSA, 2048)
 			if err != nil {
 				return nil, fmt.Errorf("create priv key failed, err = %v", err)
 			}
