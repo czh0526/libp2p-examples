@@ -22,8 +22,8 @@ func main() {
 	h, err := libp2p.New(
 		libp2p.Identity(priv),
 		libp2p.ListenAddrStrings(
-			"/ip4/0.0.0.0/tcp/9000",
-			"/ip4/0.0.0.0/udp/9000/quic"),
+			"/ip4/0.0.0.0/tcp/4001",
+			"/ip4/0.0.0.0/udp/4001/quic-v1"),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
 			dht, err = kaddht.New(context.Background(), h)
 			return dht, err
