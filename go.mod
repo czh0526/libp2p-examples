@@ -5,7 +5,7 @@ go 1.21.4
 require (
 	github.com/libp2p/go-libp2p v0.35.2
 	github.com/libp2p/go-libp2p-kad-dht v0.25.2
-	github.com/multiformats/go-multiaddr v0.12.4
+	github.com/multiformats/go-multiaddr v0.13.0
 )
 
 require (
@@ -130,3 +130,5 @@ require (
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 	lukechampine.com/blake3 v1.2.1 // indirect
 )
+
+replace github.com/libp2p/go-libp2p => ../go-libp2p
