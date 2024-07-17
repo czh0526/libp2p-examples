@@ -38,12 +38,13 @@ func main() {
 		ID:    h.ID(),
 		Addrs: h.Addrs(),
 	}
-	addrs, err := peer.AddrInfoToP2pAddrs(&peerInfo)
+	maddrs, err := peer.AddrInfoToP2pAddrs(&peerInfo)
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("libp2p peer.ID = %v, peerAddrs = %v, node address: %v \n",
-		h.ID(), h.Addrs(), addrs)
+	fmt.Printf("libp2p peer.ID = %v\n", h.ID())
+	fmt.Printf("libp2p peer.Addrs = %v\n", h.Addrs())
+	fmt.Printf("libp2p multi address = %v\n", maddrs)
 
 	<-ctx.Done()
 
