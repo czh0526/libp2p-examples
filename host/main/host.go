@@ -25,7 +25,7 @@ func main() {
 			"/ip4/0.0.0.0/tcp/4001",
 			"/ip4/0.0.0.0/udp/4001/quic-v1"),
 		libp2p.Routing(func(h host.Host) (routing.PeerRouting, error) {
-			dht, err = kaddht.New(context.Background(), h)
+			dht, err = kaddht.New(context.Background(), h, kaddht.Mode(kaddht.ModeServer))
 			return dht, err
 		}),
 	)

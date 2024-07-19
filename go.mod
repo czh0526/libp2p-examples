@@ -131,4 +131,8 @@ require (
 	lukechampine.com/blake3 v1.2.1 // indirect
 )
 
-replace github.com/libp2p/go-libp2p => ../go-libp2p
+replace (
+	github.com/libp2p/go-libp2p => ../go-libp2p
+	github.com/libp2p/go-libp2p-kad-dht => ../go-libp2p-kad-dht
+	github.com/libp2p/go-libp2p-kbucket => ../go-libp2p-kbucket
+)

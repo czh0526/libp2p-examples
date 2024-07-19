@@ -32,9 +32,26 @@ func main() {
 		bootstrapPeers = LOCAL_PEERS
 		globalFlag = ""
 	}
-	ha, _, err := makeRoutedHost(bootstrapPeers, globalFlag)
+	ha, dht, err := makeRoutedHost(bootstrapPeers, globalFlag)
 	if err != nil {
 		panic(fmt.Sprintf("make routed host failed: err = %v", err))
+	}
+	fmt.Println("make routed host success")
+	fmt.Printf("\t my id = %s\n", ha.ID().String())
+	fmt.Println("peer store => ")
+	peersInStore := ha.Peerstore().Peers()
+	for _, p := range peersInStore {
+		fmt.Printf("\t peer.ID => `%s` \n", p.String())
+	}
+	fmt.Println("network peers => ")
+	peersInSwarm := ha.Network().Peers()
+	for _, p := range peersInSwarm {
+		fmt.Printf("\t peer.ID => `%s` \n", p.String())
+	}
+	fmt.Println("dht => ")
+	peersInTable := dht.RoutingTable().ListPeers()
+	for _, p := range peersInTable {
+		fmt.Printf("\t peer.ID => `%s` \n", p.String())
 	}
 
 	if *target == "" {
@@ -66,7 +83,7 @@ func main() {
 			s, err = ha.NewStream(context.Background(), peerid, "/echo/1.0.0")
 			if err != nil {
 				fmt.Printf("peer(`%v`) create stream failed: err = %v \n", *target, err)
-				time.Sleep(3 * time.Second)
+				time.Sleep(10 * time.Second)
 				continue
 			}
 			break
@@ -124,8 +141,6 @@ func makeRoutedHost(bootstrapPeers []peer.AddrInfo,
 	if err != nil {
 		return nil, nil, err
 	}
-
-	time.Sleep(5 * time.Second)
 
 	// connect to the ipfs nodes
 	err = bootstrapConnect(ctx, routedHost, bootstrapPeers)
