@@ -5,8 +5,8 @@ import (
 	p2p "github.com/czh0526/libp2p-examples/multipro/proto"
 	"github.com/gogo/protobuf/proto"
 	"github.com/google/uuid"
-	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
+	"github.com/libp2p/go-libp2p/core/peer"
 	"io"
 	"log"
 	"sync"
@@ -113,8 +113,8 @@ func (p *PingProtocol) onPingResponse(s network.Stream) {
 	p.done <- true
 }
 
-func (p *PingProtocol) Ping(host host.Host) bool {
-	log.Printf("%s: Send ping to: %s \n", p.node.ID(), host.ID())
+func (p *PingProtocol) Ping(peerId peer.ID) bool {
+	log.Printf("%s: Send ping to: %s \n", p.node.ID(), peerId)
 
 	req := &p2p.PingRequest{
 		MessageData: p.node.NewMessageData(uuid.New().String(), false),
@@ -133,12 +133,12 @@ func (p *PingProtocol) Ping(host host.Host) bool {
 	p.requests[req.MessageData.Id] = req
 	p.mu.Unlock()
 
-	ok := p.node.SendProtoMessage(host.ID(), PING_Request, req)
+	ok := p.node.SendProtoMessage(peerId, PING_Request, req)
 	if !ok {
 		return false
 	}
 
 	log.Printf("%s: Ping to: %s was sent. Message Id: %s, Message: %s",
-		p.node.ID(), host.ID(), req.MessageData.Id, req.Message)
+		p.node.ID(), peerId, req.MessageData.Id, req.Message)
 	return true
 }

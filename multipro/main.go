@@ -2,33 +2,41 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"github.com/czh0526/libp2p-examples/utils"
 	"github.com/libp2p/go-libp2p"
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
-	"github.com/libp2p/go-libp2p/core/peerstore"
+	"github.com/libp2p/go-libp2p/core/peer"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
 	ma "github.com/multiformats/go-multiaddr"
-	"math/rand"
 )
 
-func main() {
-	rnd := rand.New(rand.NewSource(100))
-	port1 := rnd.Intn(100) + 10000
-	port2 := port1 + 1
-
-	done := make(chan bool, 1)
-	h1 := makeNode(port1, done)
-	h2 := makeNode(port2, done)
-
-	run(h1, h2, done)
+var PORT = 10000
+var PEERS = []string{
+	"QmePbkszdMhjWGPo44meahpHA4noi8w9wrxpFhQkUUbpRg",
+	"QmcVUVQijK1kUFYAtifmhMR3SVKfr3u4HRySYBM7Xf86nH",
 }
 
-func makeNode(port int, done chan bool) *Node {
+func main() {
+	id := flag.Int("id", 0, "peer number to start")
+	flag.Parse()
+
+	if *id < 1 {
+		panic("id should be greater than 0")
+	}
+
+	done := make(chan bool, 1)
+	host := makeNode(*id, PORT, done)
+
+	run(host, done)
+}
+
+func makeNode(id int, port int, done chan bool) *Node {
 	ctx := context.Background()
 
 	// 读取固定的私钥文件
-	priv, err := utils.GeneratePrivateKey("privkey.pem")
+	priv, err := utils.GeneratePrivateKey(fmt.Sprintf("host%d.pem", id))
 	if err != nil {
 		panic(err)
 	}
@@ -39,6 +47,7 @@ func makeNode(port int, done chan bool) *Node {
 		libp2p.Identity(priv),
 		libp2p.ListenAddrs(listen),
 	)
+	fmt.Printf("I am %v, please connect to me \n", basicHost.ID())
 
 	// 构建 DHT
 	dht, err := kaddht.New(ctx, basicHost)
@@ -62,16 +71,17 @@ func makeNode(port int, done chan bool) *Node {
 	return NewNode(routedHost, done)
 }
 
-func run(h1, h2 *Node, done <-chan bool) {
-	h1.Peerstore().AddAddrs(h2.ID(), h2.Addrs(), peerstore.PermanentAddrTTL)
-	h2.Peerstore().AddAddrs(h1.ID(), h1.Addrs(), peerstore.PermanentAddrTTL)
+func run(h *Node, done <-chan bool) {
+	myId := h.ID()
+	for _, pid := range PEERS {
+		peerId := peer.ID(pid)
+		if peerId != myId {
+			h.Ping(peerId)
+		}
+	}
 
-	h1.Ping(h2.Host)
-	h2.Ping(h1.Host)
 	//h1.Echo(h2.Host)
 	//h2.Echo(h1.Host)
 
-	for i := 0; i < 4; i++ {
-		<-done
-	}
+	select {}
 }
