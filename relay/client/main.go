@@ -14,7 +14,7 @@ import (
 
 var (
 	RELAY_ADDR = convertPeer(
-		"/ip4/9.134.4.207/tcp/8080/QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74")
+		"/ip4/9.134.4.207/tcp/8080/p2p/QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74")
 )
 
 func convertPeer(addr string) peer.AddrInfo {

@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"github.com/czh0526/libp2p-examples/utils"
 	"github.com/libp2p/go-libp2p"
-	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
 	"log"
 )
 
@@ -22,16 +21,17 @@ func main() {
 		libp2p.Identity(priv),
 		libp2p.ListenAddrStrings(
 			"/ip4/0.0.0.0/tcp/8080"),
+		libp2p.EnableRelay(),
 	)
 	if err != nil {
 		log.Printf("Failed to create relay1, err = %v", err)
 	}
 
-	_, err = relay.New(host)
-	if err != nil {
-		log.Printf("Failed to instantiate the relay1: %v", err)
-		return
-	}
+	//_, err = relay.New(host)
+	//if err != nil {
+	//	log.Printf("Failed to instantiate the relay1: %v", err)
+	//	return
+	//}
 
 	fmt.Printf("peer.ID = %v\n", host.ID())
 	fmt.Println("peer addresses: ")
