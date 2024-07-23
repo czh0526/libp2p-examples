@@ -45,8 +45,8 @@ func (p *PingProtocol) onPingRequest(s network.Stream) {
 		return
 	}
 
-	log.Printf("%s: Received ping request from %s, Message = %v",
-		s.Conn().LocalPeer(), s.Conn().RemotePeer(), data.Message)
+	fmt.Printf("【ping】 Received ping request from %s, Message = %v \n",
+		s.Conn().RemotePeer(), data.Message)
 
 	valid := p.node.AuthenticateMessage(data, data.MessageData)
 	if !valid {
@@ -54,8 +54,8 @@ func (p *PingProtocol) onPingRequest(s network.Stream) {
 		return
 	}
 
-	log.Printf("%s: Sending ping response to %s. Message id: %s",
-		s.Conn().LocalPeer(), s.Conn().RemotePeer(), data.MessageData.Id)
+	fmt.Printf("【ping】 Sending ping response to %s. Message = %s \n",
+		s.Conn().RemotePeer(), data.Message)
 
 	resp := &p2p.PingResponse{
 		MessageData: p.node.NewMessageData(data.MessageData.Id, false),
@@ -91,6 +91,9 @@ func (p *PingProtocol) onPingResponse(s network.Stream) {
 		log.Printf("Unmarshal ping response failed, err = %v", err)
 	}
 
+	fmt.Printf("【ping】 Received ping response from %s, Message = %v \n",
+		s.Conn().RemotePeer(), data.Message)
+
 	valid := p.node.AuthenticateMessage(data, data.MessageData)
 	if !valid {
 		log.Println("Failed to authenticate message")
@@ -108,13 +111,13 @@ func (p *PingProtocol) onPingResponse(s network.Stream) {
 	}
 	p.mu.Unlock()
 
-	log.Printf("%s: Received ping response from %s. Message id: %s. Message: %s",
-		s.Conn().LocalPeer(), s.Conn().RemotePeer(), data.MessageData.Id, data.Message)
+	fmt.Printf("【ping】 Received ping response from %s. Message = %s \n",
+		s.Conn().RemotePeer(), data.Message)
 	p.done <- true
 }
 
 func (p *PingProtocol) Ping(peerId peer.ID) bool {
-	log.Printf("%s: Send ping to: %s \n", p.node.ID(), peerId)
+	fmt.Printf("【ping】%s: Send ping to: %s \n", p.node.ID(), peerId)
 
 	req := &p2p.PingRequest{
 		MessageData: p.node.NewMessageData(uuid.New().String(), false),
@@ -138,7 +141,7 @@ func (p *PingProtocol) Ping(peerId peer.ID) bool {
 		return false
 	}
 
-	log.Printf("%s: Ping to: %s was sent. Message Id: %s, Message: %s",
-		p.node.ID(), peerId, req.MessageData.Id, req.Message)
+	fmt.Printf("【ping】 Ping to: %s was sent， Message = %s \n",
+		peerId, req.Message)
 	return true
 }
