@@ -13,7 +13,7 @@ import (
 
 var (
 	BOOTSTRAP_PEERS = convertPeers([]string{
-		"/ip4/9.134.4.207/tcp/8080/p2p/12D3KooWCSvzkfKPH5SgtBb2m5Sk5MSqwmDsVcMS5ieYhAKtaq5x",
+		"/ip4/9.134.4.207/tcp/8080/p2p/QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74",
 	})
 )
 
