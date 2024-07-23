@@ -8,16 +8,26 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
-	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
 	ma "github.com/multiformats/go-multiaddr"
 	"log"
 )
 
-func main() {
-	run()
+var (
+	RELAY_ADDR = convertPeer(
+		"/ip4/9.134.4.207/tcp/8080/QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74")
+)
+
+func convertPeer(addr string) peer.AddrInfo {
+
+	maddr := ma.StringCast(addr)
+	p, err := peer.AddrInfoFromP2pAddr(maddr)
+	if err != nil {
+		panic(fmt.Sprintf("parse ipfs bootstrap peers failed: err = %v", err))
+	}
+	return *p
 }
 
-func run() {
+func main() {
 	unreachable1, err := libp2p.New(
 		libp2p.NoListenAddrs,
 		libp2p.EnableRelay(),
@@ -49,42 +59,27 @@ func run() {
 
 	log.Println("As suspected, we cannot directly dial between the unreachable hosts")
 
-	relay1, err := libp2p.New()
-	if err != nil {
-		log.Printf("Failed to create relay1, err = %v", err)
-	}
-
-	_, err = relay.New(relay1)
-	if err != nil {
-		log.Printf("Failed to instantiate the relay1: %v", err)
-		return
-	}
-
-	relay1Info := peer.AddrInfo{
-		ID:    relay1.ID(),
-		Addrs: relay1.Addrs(),
-	}
-	if err := unreachable1.Connect(context.Background(), relay1Info); err != nil {
+	if err := unreachable1.Connect(context.Background(), RELAY_ADDR); err != nil {
 		log.Printf("Failed to connect unreachable1 and relay1: err = %v", err)
 		return
 	}
-	if err := unreachable2.Connect(context.Background(), relay1Info); err != nil {
+	if err := unreachable2.Connect(context.Background(), RELAY_ADDR); err != nil {
 		log.Printf("Failed to connect unreachable2 and relay1: err = %v", err)
 	}
-	
+
 	unreachable2.SetStreamHandler("/customprotocol", func(s network.Stream) {
 		log.Println("Awesome! we're now communicating via the relay!")
 		s.Close()
 	})
 
-	_, err = client.Reserve(context.Background(), unreachable2, relay1Info)
+	_, err = client.Reserve(context.Background(), unreachable2, RELAY_ADDR)
 	if err != nil {
 		log.Printf("unreachable2 failed to receive a relay reservation from relay1, err = %v", err)
 		return
 	}
 
 	relayaddr, err := ma.NewMultiaddr(fmt.Sprintf("/p2p/%s/p2p-circuit/p2p/%s",
-		relay1Info.ID.String(), unreachable2.ID().String()))
+		RELAY_ADDR.ID.String(), unreachable2.ID().String()))
 	if err != nil {
 		log.Println(err)
 		return

@@ -29,8 +29,8 @@ func createNode() (host.Host, error) {
 		return nil, err
 	}
 
-	fmt.Printf("libp2p peer.ID = %v\n", host.ID())
-	fmt.Println("libp2p peer addresses: ")
+	fmt.Printf("peer.ID = %v\n", host.ID())
+	fmt.Println("peer addresses: ")
 	for _, addr := range host.Addrs() {
 		fmt.Printf("\t=> %v\n", addr)
 	}
