@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	p2p "github.com/czh0526/libp2p-examples/multipro/proto"
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/gogo/protobuf/proto"
@@ -28,6 +29,27 @@ func NewNode(host host.Host, done chan bool) *Node {
 	node.PingProtocol = NewPingProtocol(node, done)
 	node.EchoProtocol = NewEchoProtocol(node, done)
 	return node
+}
+
+func (n *Node) run(done <-chan bool) {
+	myId := n.ID()
+	for _, pid := range PEERS {
+		peerId := peer.ID(pid)
+		if peerId == myId {
+			continue
+		}
+
+		if !n.Ping(peerId) {
+			fmt.Printf("Peer %s is down\n", peerId)
+		}
+
+		time.Sleep(10 * time.Second)
+	}
+
+	//h1.Echo(h2.Host)
+	//h2.Echo(h1.Host)
+
+	select {}
 }
 
 func (n *Node) NewMessageData(messageId string, gossip bool) *p2p.MessageData {

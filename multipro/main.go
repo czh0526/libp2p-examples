@@ -7,7 +7,6 @@ import (
 	"github.com/czh0526/libp2p-examples/utils"
 	"github.com/libp2p/go-libp2p"
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
-	"github.com/libp2p/go-libp2p/core/peer"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
 	ma "github.com/multiformats/go-multiaddr"
 )
@@ -29,7 +28,7 @@ func main() {
 	done := make(chan bool, 1)
 	host := makeNode(*id, PORT, done)
 
-	run(host, done)
+	host.run(done)
 }
 
 func makeNode(id int, port int, done chan bool) *Node {
@@ -56,7 +55,7 @@ func makeNode(id int, port int, done chan bool) *Node {
 	}
 	routedHost := rhost.Wrap(basicHost, dht)
 
-	// bootstrap the host
+	// bootstrap the DHT
 	err = dht.Bootstrap(ctx)
 	if err != nil {
 		panic(fmt.Sprintf("host bootstrap failed, err = %v", err))
@@ -69,19 +68,4 @@ func makeNode(id int, port int, done chan bool) *Node {
 	}
 
 	return NewNode(routedHost, done)
-}
-
-func run(h *Node, done <-chan bool) {
-	myId := h.ID()
-	for _, pid := range PEERS {
-		peerId := peer.ID(pid)
-		if peerId != myId {
-			h.Ping(peerId)
-		}
-	}
-
-	//h1.Echo(h2.Host)
-	//h2.Echo(h1.Host)
-
-	select {}
 }
