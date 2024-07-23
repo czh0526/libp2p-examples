@@ -70,8 +70,7 @@ func (p *PingProtocol) onPingRequest(s network.Stream) {
 	resp.MessageData.Sign = signature
 	ok := p.node.SendProtoMessage(s.Conn().RemotePeer(), PING_Response, resp)
 	if ok {
-		log.Printf("%s: Ping response to %s sent.",
-			s.Conn().LocalPeer(), s.Conn().RemotePeer())
+		fmt.Printf("【ping】 Ping response to %s sent.\n", s.Conn().RemotePeer())
 	}
 	p.done <- true
 }
