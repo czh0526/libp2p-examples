@@ -43,9 +43,14 @@ func main() {
 		panic(err)
 	}
 	fmt.Printf("libp2p peer.ID = %v\n", h.ID())
-	fmt.Printf("libp2p peer.Addrs = %v\n", h.Addrs())
-	fmt.Printf("libp2p multi address = %v\n", maddrs)
+	fmt.Println("libp2p peer addresses: ")
+	for _, addr := range h.Addrs() {
+		fmt.Printf("\t=> %v\n", addr)
+	}
+	fmt.Println("libp2p multi addresses: ")
+	for _, addr := range maddrs {
+		fmt.Printf("\t=> %v\n", addr)
+	}
 
 	<-ctx.Done()
-
 }
