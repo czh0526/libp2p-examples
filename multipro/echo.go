@@ -3,9 +3,11 @@ package main
 import (
 	"fmt"
 	p2p "github.com/czh0526/libp2p-examples/multipro/proto"
+	"github.com/gogo/protobuf/proto"
 	"github.com/google/uuid"
-	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
+	"github.com/libp2p/go-libp2p/core/peer"
+	"io"
 	"log"
 )
 
@@ -32,15 +34,89 @@ func NewEchoProtocol(node *Node, done chan bool) *EchoProtocol {
 }
 
 func (e *EchoProtocol) onEchoRequest(s network.Stream) {
+	data := &p2p.EchoRequest{}
+	buf, err := io.ReadAll(s)
+	if err != nil {
+		s.Reset()
+		log.Println(err)
+		return
+	}
+	s.Close()
 
+	err = proto.Unmarshal(buf, data)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	fmt.Printf("【echo】Received echo request from %s, Message = %v\n",
+		s.Conn().RemotePeer().String(), data.Message)
+
+	valid := e.node.AuthenticateMessage(data, data.MessageData)
+	if !valid {
+		log.Println("Failed to authenticate message")
+		return
+	}
+
+	fmt.Printf("【echo】Sending echo response to %s, Message = %v\n",
+		s.Conn().RemotePeer().String(), data.Message)
+	// create echo response
+	resp := &p2p.EchoResponse{
+		Message:     data.Message,
+		MessageData: e.node.NewMessageData(data.MessageData.Id, false),
+	}
+	signature, err := e.node.SignProtoMessage(resp)
+	if err != nil {
+		log.Printf("failed to sign response, err = %v", err)
+		return
+	}
+	resp.MessageData.Sign = signature
+
+	// send echo response
+	ok := e.node.SendProtoMessage(s.Conn().RemotePeer(), ECHO_Response, resp)
+	if !ok {
+		fmt.Printf("【echo】Echo response to %s sent.", s.Conn().RemotePeer())
+	}
+	e.done <- true
 }
 
 func (e *EchoProtocol) onEchoResponse(s network.Stream) {
+	data := &p2p.EchoResponse{}
+	buf, err := io.ReadAll(s)
+	if err != nil {
+		s.Reset()
+		log.Println(err)
+		return
+	}
+	s.Close()
 
+	err = proto.Unmarshal(buf, data)
+	if err != nil {
+		log.Println(err)
+		return
+	}
+
+	valid := e.node.AuthenticateMessage(data, data.MessageData)
+	if !valid {
+		log.Printf("Failed to authenticate message, err = %v", err)
+		return
+	}
+
+	req, ok := e.requests[data.MessageData.Id]
+	if ok {
+		delete(e.requests, data.MessageData.Id)
+	} else {
+		log.Printf("Failed to find request for id = %v", data.MessageData.Id)
+		return
+	}
+
+	fmt.Printf("【Echo】Received echo response from %s, Message = %v\n",
+		s.Conn().RemotePeer().String(), data.Message)
+	e.done <- true
 }
 
-func (e *EchoProtocol) Echo(host host.Host) bool {
-	log.Printf("%s: Sending echo to: %s", e.node.ID(), host.ID())
+func (e *EchoProtocol) Echo(peerId peer.ID) bool {
+	log.Printf("【echo】 Plan to send echo to: %s", peerId)
 
 	req := &p2p.EchoRequest{
 		MessageData: e.node.NewMessageData(uuid.New().String(), false),
@@ -55,13 +131,13 @@ func (e *EchoProtocol) Echo(host host.Host) bool {
 
 	req.MessageData.Sign = signature
 
-	ok := e.node.SendProtoMessage(host.ID(), ECHO_Request, req)
+	ok := e.node.SendProtoMessage(peerId, ECHO_Request, req)
 	if !ok {
 		return false
 	}
 
 	e.requests[req.MessageData.Id] = req
-	log.Printf("%s: Echo to: %s was sent, Message Id: %s: Message: %s",
-		e.node.ID(), host.ID(), req.MessageData.Id, req.Message)
+	fmt.Printf("【echo】 Echo to: %s was sent, Message: %s \n", peerId, req.Message)
+
 	return true
 }

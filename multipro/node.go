@@ -46,14 +46,13 @@ func (n *Node) run(done <-chan bool) {
 			if !n.Ping(peerId) {
 				fmt.Printf("【ping】`%s` is down\n", peerId)
 			}
+
+			if !n.Echo(peerId) {
+				fmt.Printf("【echo】`%s` is down\n", peerId)
+			}
 			time.Sleep(10 * time.Second)
 		}
 	}
-
-	//h1.Echo(h2.Host)
-	//h2.Echo(h1.Host)
-
-	select {}
 }
 
 func (n *Node) NewMessageData(messageId string, gossip bool) *p2p.MessageData {

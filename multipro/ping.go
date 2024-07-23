@@ -110,13 +110,12 @@ func (p *PingProtocol) onPingResponse(s network.Stream) {
 	}
 	p.mu.Unlock()
 
-	fmt.Printf("【ping】 Received ping response from %s. Message = %s \n",
-		s.Conn().RemotePeer(), data.Message)
+	fmt.Printf("【ping】 Received ping response from %s ok \n", s.Conn().RemotePeer())
 	p.done <- true
 }
 
 func (p *PingProtocol) Ping(peerId peer.ID) bool {
-	fmt.Printf("【ping】%s: Send ping to: %s \n", p.node.ID(), peerId)
+	fmt.Printf("【ping】Plan to send ping to: %s \n", peerId)
 
 	req := &p2p.PingRequest{
 		MessageData: p.node.NewMessageData(uuid.New().String(), false),
