@@ -22,7 +22,7 @@ func main() {
 		libp2p.Identity(priv),
 		libp2p.ListenAddrStrings(
 			"/ip4/0.0.0.0/tcp/8080"),
-		libp2p.EnableRelay(),
+		//libp2p.EnableRelay(),
 	)
 	if err != nil {
 		log.Printf("Failed to create relay1, err = %v", err)
