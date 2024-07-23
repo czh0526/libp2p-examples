@@ -34,7 +34,10 @@ func NewNode(host host.Host, done chan bool) *Node {
 func (n *Node) run(done <-chan bool) {
 	myId := n.ID()
 	for _, pid := range PEERS {
-		peerId := peer.ID(pid)
+		peerId, err := peer.Decode(pid)
+		if err != nil {
+			fmt.Printf("decode peer id(`%s`) failed: err = %v\n", pid, err)
+		}
 		if peerId == myId {
 			continue
 		}
