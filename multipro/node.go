@@ -46,6 +46,7 @@ func (n *Node) run(done <-chan bool) {
 			fmt.Printf("Peer %s is down\n", peerId)
 		}
 
+		fmt.Printf("%s ping => %s \n", myId, peerId)
 		time.Sleep(10 * time.Second)
 	}
 
