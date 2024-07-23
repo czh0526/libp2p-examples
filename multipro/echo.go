@@ -111,7 +111,7 @@ func (e *EchoProtocol) onEchoResponse(s network.Stream) {
 	}
 
 	fmt.Printf("【Echo】Received echo response from %s, Message = %v\n",
-		s.Conn().RemotePeer().String(), data.Message)
+		s.Conn().RemotePeer().String(), req.Message)
 	e.done <- true
 }
 
