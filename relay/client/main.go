@@ -8,10 +8,8 @@ import (
 	"github.com/libp2p/go-libp2p"
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
-	ma "github.com/multiformats/go-multiaddr"
 )
 
-var PORT = 10000
 var PEERS = []string{
 	"QmePbkszdMhjWGPo44meahpHA4noi8w9wrxpFhQkUUbpRg",
 	"QmcVUVQijK1kUFYAtifmhMR3SVKfr3u4HRySYBM7Xf86nH",
@@ -26,12 +24,12 @@ func main() {
 	}
 
 	done := make(chan bool, 1)
-	host := makeNode(*id, PORT, done)
+	host := makeNode(*id, done)
 
 	host.run()
 }
 
-func makeNode(id int, port int, done chan bool) *Node {
+func makeNode(id int, done chan bool) *Node {
 	ctx := context.Background()
 
 	// 读取固定的私钥文件
@@ -41,10 +39,11 @@ func makeNode(id int, port int, done chan bool) *Node {
 	}
 
 	// 构建 BasicHost
-	listen, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/%d", port))
+	//listen, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/10000"))
 	basicHost, _ := libp2p.New(
 		libp2p.Identity(priv),
-		libp2p.ListenAddrs(listen),
+		libp2p.NoListenAddrs,
+		//libp2p.ListenAddrs(listen),
 	)
 	fmt.Printf("I am %v, please connect to me \n", basicHost.ID())
 
