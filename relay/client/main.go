@@ -69,24 +69,25 @@ func main() {
 				continue
 			}
 
-			_, err = rhost.NewStream(context.Background(), pid)
-			if err == nil {
-				log.Printf("This actually should have failed.")
+			_, err = rhost.NewStream(context.Background(), pid, "/customprotocol")
+			if err != nil {
+				log.Printf("two hosts connect directly failed, err = %v", err)
 				continue
 			}
 
-			log.Println("As suspected, we cannot directly dial between the unreachable hosts")
+			fmt.Println("【normal】As suspected, we cannot directly dial between two hosts")
 
 			if err := rhost.Connect(context.Background(), RELAY_ADDR); err != nil {
 				log.Printf("Failed to connect host and relay: err = %v", err)
 				continue
 			}
 
-			_, err = client.Reserve(context.Background(), rhost, RELAY_ADDR)
+			reservation, err := client.Reserve(context.Background(), rhost, RELAY_ADDR)
 			if err != nil {
-				log.Printf("unreachable2 failed to receive a relay reservation from relay1, err = %v", err)
+				log.Printf("host failed to receive a relay reservation from relay, err = %v", err)
 				continue
 			}
+			fmt.Printf("【normal】Reservation = %v\n", reservation)
 
 			relayaddr, err := ma.NewMultiaddr(fmt.Sprintf("/p2p/%s/p2p-circuit/p2p/%s",
 				RELAY_ADDR.ID.String(), pid.String()))
@@ -96,7 +97,7 @@ func main() {
 			}
 
 			rhost.Network().(*swarm.Swarm).Backoff().Clear(pid)
-			fmt.Println("Now let's attempt to connect the hosts via the relay node")
+			fmt.Println("【normal】Now let's attempt to connect the hosts via the relay node")
 
 			relayInfo := peer.AddrInfo{
 				ID:    pid,
@@ -107,7 +108,7 @@ func main() {
 				continue
 			}
 
-			fmt.Println("Yep, that worked!")
+			fmt.Println("【normal】Yep, that worked!")
 
 			s, err := rhost.NewStream(
 				network.WithAllowLimitedConn(context.Background(), "customprotocol"),
