@@ -130,9 +130,11 @@ func makeHost(ctx context.Context, keyFilename string) (host.Host, error) {
 		panic(err)
 	}
 
+	listen, _ := ma.NewMultiaddr("/ip4/0.0.0.0/tcp/10000")
 	basicHost, err := libp2p.New(
 		libp2p.Identity(priv),
-		libp2p.NoListenAddrs,
+		//libp2p.NoListenAddrs,
+		libp2p.ListenAddrs(listen),
 		libp2p.EnableRelay(),
 	)
 	if err != nil {
