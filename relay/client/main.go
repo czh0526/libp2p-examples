@@ -72,27 +72,27 @@ func main() {
 			_, err = rhost.NewStream(context.Background(), pid)
 			if err == nil {
 				log.Printf("This actually should have failed.")
-				return
+				continue
 			}
 
 			log.Println("As suspected, we cannot directly dial between the unreachable hosts")
 
 			if err := rhost.Connect(context.Background(), RELAY_ADDR); err != nil {
 				log.Printf("Failed to connect host and relay: err = %v", err)
-				return
+				continue
 			}
 
 			_, err = client.Reserve(context.Background(), rhost, RELAY_ADDR)
 			if err != nil {
 				log.Printf("unreachable2 failed to receive a relay reservation from relay1, err = %v", err)
-				return
+				continue
 			}
 
 			relayaddr, err := ma.NewMultiaddr(fmt.Sprintf("/p2p/%s/p2p-circuit/p2p/%s",
 				RELAY_ADDR.ID.String(), pid.String()))
 			if err != nil {
 				log.Println(err)
-				return
+				continue
 			}
 
 			rhost.Network().(*swarm.Swarm).Backoff().Clear(pid)
@@ -104,7 +104,7 @@ func main() {
 			}
 			if err := rhost.Connect(context.Background(), relayInfo); err != nil {
 				log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
-				return
+				continue
 			}
 
 			fmt.Println("Yep, that worked!")
@@ -114,7 +114,7 @@ func main() {
 				pid, "/customprotocol")
 			if err != nil {
 				log.Printf("Whoops, this should have worked..., err = %v \n", err)
-				return
+				continue
 			}
 
 			s.Read(make([]byte, 1))
