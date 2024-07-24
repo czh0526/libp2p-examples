@@ -20,7 +20,7 @@ const (
 
 type Node struct {
 	host.Host
-	PingProtocol
+	*PingProtocol
 }
 
 func NewNode(host host.Host, done chan bool) *Node {
