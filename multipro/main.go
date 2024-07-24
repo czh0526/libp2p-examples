@@ -28,7 +28,7 @@ func main() {
 	done := make(chan bool, 1)
 	host := makeNode(*id, PORT, done)
 
-	host.run(done)
+	host.run()
 }
 
 func makeNode(id int, port int, done chan bool) *Node {

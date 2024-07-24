@@ -10,7 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/routing"
 )
 
-func createNode() (host.Host, error) {
+func makeHost() (host.Host, error) {
 
 	priv, err := utils.GeneratePrivateKey("privkey.pem")
 	if err != nil {
@@ -42,11 +42,11 @@ func main() {
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
 
-	host, err := createNode()
+	h, err := makeHost()
 	if err != nil {
 		panic(fmt.Sprintf("create node 1 failed: %v", err))
 	}
-	defer host.Close()
+	defer h.Close()
 
 	<-ctx.Done()
 }

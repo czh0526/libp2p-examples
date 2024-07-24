@@ -31,7 +31,7 @@ func NewNode(host host.Host, done chan bool) *Node {
 	return node
 }
 
-func (n *Node) run(done <-chan bool) {
+func (n *Node) run() {
 	myId := n.ID()
 	for {
 		for _, pid := range PEERS {
