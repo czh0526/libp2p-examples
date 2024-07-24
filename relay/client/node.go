@@ -44,9 +44,9 @@ func (n *Node) run() {
 				continue
 			}
 
-			if !n.Ping(peerId) {
-				fmt.Printf("【ping】`%s` is down\n", peerId)
-			}
+			//if !n.Ping(peerId) {
+			//	fmt.Printf("【ping】`%s` is down\n", peerId)
+			//}
 
 			if err = n.ConnectByRelay(peerId); err != nil {
 				fmt.Printf("connect to relay host failed, err = %v\n", err)
