@@ -163,7 +163,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 	}
 	fmt.Printf("【normal】Reservation = %v\n", reservation)
 
-	relayaddr, err := ma.NewMultiaddr(fmt.Sprintf("/ping/pingreq/0.0.1/%s/p2p-circuit/ping/pingreq/0.0.1/%s",
+	relayAddr, err := ma.NewMultiaddr(fmt.Sprintf("/p2p/%s/p2p-circuit/p2p/%s",
 		RELAY_ADDR.ID.String(), pid.String()))
 	if err != nil {
 		log.Printf("new multiaddr for relay failed, err = %v", err)
@@ -175,7 +175,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 
 	relayInfo := peer.AddrInfo{
 		ID:    pid,
-		Addrs: []ma.Multiaddr{relayaddr},
+		Addrs: []ma.Multiaddr{relayAddr},
 	}
 	if err := rHost.Connect(context.Background(), relayInfo); err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
