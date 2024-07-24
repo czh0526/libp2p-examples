@@ -15,6 +15,7 @@ import (
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
 	ma "github.com/multiformats/go-multiaddr"
 	"log"
+	"time"
 )
 
 var (
@@ -57,65 +58,68 @@ func main() {
 		s.Close()
 	})
 
-	for _, p := range PEERS {
-		pid, err := peer.Decode(p)
-		if err != nil {
-			fmt.Printf("decode pid id(`%s`) failed: err = %v\n", p, err)
+	for {
+		for _, p := range PEERS {
+			pid, err := peer.Decode(p)
+			if err != nil {
+				fmt.Printf("decode pid id(`%s`) failed: err = %v\n", p, err)
+			}
+
+			if pid == rhost.ID() {
+				continue
+			}
+
+			_, err = rhost.NewStream(context.Background(), pid)
+			if err == nil {
+				log.Printf("This actually should have failed.")
+				return
+			}
+
+			log.Println("As suspected, we cannot directly dial between the unreachable hosts")
+
+			if err := rhost.Connect(context.Background(), RELAY_ADDR); err != nil {
+				log.Printf("Failed to connect host and relay: err = %v", err)
+				return
+			}
+
+			_, err = client.Reserve(context.Background(), rhost, RELAY_ADDR)
+			if err != nil {
+				log.Printf("unreachable2 failed to receive a relay reservation from relay1, err = %v", err)
+				return
+			}
+
+			relayaddr, err := ma.NewMultiaddr(fmt.Sprintf("/p2p/%s/p2p-circuit/p2p/%s",
+				RELAY_ADDR.ID.String(), pid.String()))
+			if err != nil {
+				log.Println(err)
+				return
+			}
+
+			rhost.Network().(*swarm.Swarm).Backoff().Clear(pid)
+			fmt.Println("Now let's attempt to connect the hosts via the relay node")
+
+			relayInfo := peer.AddrInfo{
+				ID:    pid,
+				Addrs: []ma.Multiaddr{relayaddr},
+			}
+			if err := rhost.Connect(context.Background(), relayInfo); err != nil {
+				log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
+				return
+			}
+
+			fmt.Println("Yep, that worked!")
+
+			s, err := rhost.NewStream(
+				network.WithAllowLimitedConn(context.Background(), "customprotocol"),
+				pid, "/customprotocol")
+			if err != nil {
+				log.Printf("Whoops, this should have worked..., err = %v \n", err)
+				return
+			}
+
+			s.Read(make([]byte, 1))
 		}
-
-		if pid == rhost.ID() {
-			continue
-		}
-
-		_, err = rhost.NewStream(context.Background(), pid)
-		if err == nil {
-			log.Printf("This actually should have failed.")
-			return
-		}
-
-		log.Println("As suspected, we cannot directly dial between the unreachable hosts")
-
-		if err := rhost.Connect(context.Background(), RELAY_ADDR); err != nil {
-			log.Printf("Failed to connect host and relay: err = %v", err)
-			return
-		}
-
-		_, err = client.Reserve(context.Background(), rhost, RELAY_ADDR)
-		if err != nil {
-			log.Printf("unreachable2 failed to receive a relay reservation from relay1, err = %v", err)
-			return
-		}
-
-		relayaddr, err := ma.NewMultiaddr(fmt.Sprintf("/p2p/%s/p2p-circuit/p2p/%s",
-			RELAY_ADDR.ID.String(), pid.String()))
-		if err != nil {
-			log.Println(err)
-			return
-		}
-
-		rhost.Network().(*swarm.Swarm).Backoff().Clear(pid)
-		fmt.Println("Now let's attempt to connect the hosts via the relay node")
-
-		relayInfo := peer.AddrInfo{
-			ID:    pid,
-			Addrs: []ma.Multiaddr{relayaddr},
-		}
-		if err := rhost.Connect(context.Background(), relayInfo); err != nil {
-			log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
-			return
-		}
-
-		fmt.Println("Yep, that worked!")
-
-		s, err := rhost.NewStream(
-			network.WithAllowLimitedConn(context.Background(), "customprotocol"),
-			pid, "/customprotocol")
-		if err != nil {
-			log.Printf("Whoops, this should have worked..., err = %v \n", err)
-			return
-		}
-
-		s.Read(make([]byte, 1))
+		time.Sleep(10 * time.Second)
 	}
 }
 
