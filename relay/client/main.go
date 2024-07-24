@@ -47,7 +47,7 @@ func main() {
 		panic("id should be greater than 0")
 	}
 
-	rhost, err := makeHost(context.Background(), fmt.Sprintf("host%d.pem", id))
+	rhost, err := makeHost(context.Background(), fmt.Sprintf("host%d.pem", *id))
 	if err != nil {
 		panic(fmt.Sprintf("make host failed: err = %v", err))
 	}
@@ -101,7 +101,7 @@ func main() {
 			Addrs: []ma.Multiaddr{relayaddr},
 		}
 		if err := rhost.Connect(context.Background(), relayInfo); err != nil {
-			log.Printf("Unexpected error here. Failed to connect unreachable1 and unreachable2, err = %v", err)
+			log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
 			return
 		}
 
