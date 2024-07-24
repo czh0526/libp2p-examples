@@ -135,7 +135,7 @@ func makeHost(ctx context.Context, keyFilename string) (host.Host, error) {
 		libp2p.Identity(priv),
 		//libp2p.NoListenAddrs,
 		libp2p.ListenAddrs(listen),
-		libp2p.EnableRelay(),
+		//libp2p.EnableRelay(),
 	)
 	if err != nil {
 		log.Printf("Failed to create host, err = %v", err)
