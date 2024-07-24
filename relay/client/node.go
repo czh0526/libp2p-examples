@@ -9,6 +9,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/peerstore"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
@@ -164,7 +165,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 	fmt.Printf("【normal】Reservation = %v\n", reservation)
 
 	relayAddr, err := ma.NewMultiaddr(
-		fmt.Sprintf("/ip4/9.134.4.207/tcp/8000/p2p/%s/p2p-circuit/p2p/%s",
+		fmt.Sprintf("/p2p/%s/p2p-circuit/p2p/%s",
 			RELAY_ADDR.ID.String(), pid.String()))
 	if err != nil {
 		log.Printf("new multiaddr for relay failed, err = %v", err)
@@ -179,6 +180,8 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		log.Printf("new addrInfo for relay failed, err = %v", err)
 		return err
 	}
+
+	rHost.Peerstore().AddAddrs(RELAY_ADDR.ID, RELAY_ADDR.Addrs, peerstore.PermanentAddrTTL)
 	if err := rHost.Connect(context.Background(), *relayInfo); err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
 		return err
