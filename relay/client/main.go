@@ -8,12 +8,18 @@ import (
 	"github.com/libp2p/go-libp2p"
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
+	ma "github.com/multiformats/go-multiaddr"
 )
 
 var PEERS = []string{
 	"QmePbkszdMhjWGPo44meahpHA4noi8w9wrxpFhQkUUbpRg",
 	"QmcVUVQijK1kUFYAtifmhMR3SVKfr3u4HRySYBM7Xf86nH",
 }
+
+var (
+	RELAY_ADDR = convertPeer(
+		"/ip4/9.134.4.207/tcp/8000/p2p/QmfNuQPFFuqw6x2cptzRwmnZah1hJBdQ3niTBLSEpJKgmd")
+)
 
 func main() {
 	id := flag.Int("id", 0, "peer number to start")
@@ -39,13 +45,14 @@ func makeNode(id int, done chan bool) *Node {
 	}
 
 	// 构建 BasicHost
-	//listen, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/10000"))
+	listen, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/10000"))
 	basicHost, _ := libp2p.New(
 		libp2p.Identity(priv),
-		libp2p.NoListenAddrs,
-		//libp2p.ListenAddrs(listen),
+		//libp2p.NoListenAddrs,
+		libp2p.ListenAddrs(listen),
 	)
-	fmt.Printf("I am %v, please connect to me \n", basicHost.ID())
+	fmt.Printf("I am %v \n", basicHost.ID())
+	fmt.Printf("I am listening on %v \n", listen)
 
 	// 构建 DHT
 	dht, err := kaddht.New(ctx, basicHost)

@@ -10,6 +10,9 @@ import (
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
+	"github.com/libp2p/go-libp2p/p2p/net/swarm"
+	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
+	ma "github.com/multiformats/go-multiaddr"
 	"log"
 	"time"
 )
@@ -43,6 +46,10 @@ func (n *Node) run() {
 
 			if !n.Ping(peerId) {
 				fmt.Printf("【ping】`%s` is down\n", peerId)
+			}
+
+			if err = n.ConnectByRelay(peerId); err != nil {
+				fmt.Printf("connect to relay host failed, err = %v\n", err)
 			}
 
 			time.Sleep(10 * time.Second)
@@ -140,4 +147,41 @@ func (n *Node) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) b
 		return false
 	}
 	return true
+}
+
+func (n *Node) ConnectByRelay(pid peer.ID) error {
+	rHost := n.Host
+	if err := rHost.Connect(context.Background(), RELAY_ADDR); err != nil {
+		log.Printf("Failed to connect host and relay: err = %v", err)
+		return err
+	}
+
+	reservation, err := client.Reserve(context.Background(), rHost, RELAY_ADDR)
+	if err != nil {
+		log.Printf("host failed to receive a relay reservation from relay, err = %v", err)
+		return err
+	}
+	fmt.Printf("【normal】Reservation = %v\n", reservation)
+
+	relayaddr, err := ma.NewMultiaddr(fmt.Sprintf("/p2p/%s/p2p-circuit/p2p/%s",
+		RELAY_ADDR.ID.String(), pid.String()))
+	if err != nil {
+		log.Printf("new multiaddr for relay failed, err = %v", err)
+		return err
+	}
+
+	rHost.Network().(*swarm.Swarm).Backoff().Clear(pid)
+	fmt.Println("【normal】Now let's attempt to connect the hosts via the relay node")
+
+	relayInfo := peer.AddrInfo{
+		ID:    pid,
+		Addrs: []ma.Multiaddr{relayaddr},
+	}
+	if err := rHost.Connect(context.Background(), relayInfo); err != nil {
+		log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
+		return err
+	}
+
+	fmt.Println("【normal】Yep, that worked!")
+	return nil
 }

@@ -12,23 +12,18 @@ import (
 )
 
 var (
-	BOOTSTRAP_PEERS = convertPeers([]string{
-		"/ip4/9.134.4.207/tcp/8080/p2p/QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74",
-	})
+	BOOTSTRAP_PEERS = []peer.AddrInfo{
+		convertPeer("/ip4/9.134.4.207/tcp/8080/p2p/QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74"),
+	}
 )
 
-func convertPeers(peers []string) []peer.AddrInfo {
-	pinfos := make([]peer.AddrInfo, len(peers))
-	for i, addr := range peers {
-		maddr := ma.StringCast(addr)
-		p, err := peer.AddrInfoFromP2pAddr(maddr)
-		if err != nil {
-			panic(fmt.Sprintf("parse ipfs bootstrap peers failed: err = %v", err))
-		}
-		pinfos[i] = *p
+func convertPeer(addr string) peer.AddrInfo {
+	maddr := ma.StringCast(addr)
+	p, err := peer.AddrInfoFromP2pAddr(maddr)
+	if err != nil {
+		panic(fmt.Sprintf("parse ipfs bootstrap peers failed: err = %v", err))
 	}
-
-	return pinfos
+	return *p
 }
 
 func bootstrapConnect(ctx context.Context, ph host.Host, peers []peer.AddrInfo) error {
