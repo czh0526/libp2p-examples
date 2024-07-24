@@ -163,8 +163,9 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 	}
 	fmt.Printf("【normal】Reservation = %v\n", reservation)
 
-	relayAddr, err := ma.NewMultiaddr(fmt.Sprintf("/ip4/9.134.4.207/tcp/8000/p2p/%s/p2p-circuit/p2p/%s%s",
-		RELAY_ADDR.ID.String(), pid.String(), PING_Request))
+	relayAddr, err := ma.NewMultiaddr(
+		fmt.Sprintf("/ip4/9.134.4.207/tcp/8000/p2p/%s/p2p-circuit/p2p/%s",
+			RELAY_ADDR.ID.String(), pid.String()))
 	if err != nil {
 		log.Printf("new multiaddr for relay failed, err = %v", err)
 		return err
@@ -173,11 +174,12 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 	rHost.Network().(*swarm.Swarm).Backoff().Clear(pid)
 	fmt.Println("【normal】Now let's attempt to connect the hosts via the relay node")
 
-	relayInfo := peer.AddrInfo{
-		ID:    pid,
-		Addrs: []ma.Multiaddr{relayAddr},
+	relayInfo, err := peer.AddrInfoFromP2pAddr(relayAddr)
+	if err != nil {
+		log.Printf("new addrInfo for relay failed, err = %v", err)
+		return err
 	}
-	if err := rHost.Connect(context.Background(), relayInfo); err != nil {
+	if err := rHost.Connect(context.Background(), *relayInfo); err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
 		return err
 	}
