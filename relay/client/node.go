@@ -163,8 +163,8 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 	}
 	fmt.Printf("【normal】Reservation = %v\n", reservation)
 
-	relayaddr, err := ma.NewMultiaddr(fmt.Sprintf("/%s/%s/p2p-circuit/%s/%s",
-		PING_Request, RELAY_ADDR.ID.String(), PING_Request, pid.String()))
+	relayaddr, err := ma.NewMultiaddr(fmt.Sprintf("/ping/pingreq/0.0.1/%s/p2p-circuit/ping/pingreq/0.0.1/%s",
+		RELAY_ADDR.ID.String(), pid.String()))
 	if err != nil {
 		log.Printf("new multiaddr for relay failed, err = %v", err)
 		return err
