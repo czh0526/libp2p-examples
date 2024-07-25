@@ -154,12 +154,6 @@ func (n *Node) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) b
 func (n *Node) ConnectByRelay(pid peer.ID) error {
 	rHost := n.Host
 
-	reservation, err := client.Reserve(context.Background(), rHost, RELAY_ADDR)
-	if err != nil {
-		panic(fmt.Sprintf("host failed to receive a relay reservation from relay, err = %v", err))
-	}
-	fmt.Printf("【normal】Reservation = %v\n", reservation)
-
 	relayAddr, err := ma.NewMultiaddr(
 		fmt.Sprintf("/ip4/9.134.4.207/tcp/8000/p2p/%s/p2p-circuit/p2p/%s",
 			RELAY_ADDR.ID.String(), pid.String()))
@@ -176,6 +170,12 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		log.Printf("new addrInfo for relay failed, err = %v", err)
 		return err
 	}
+
+	reservation, err := client.Reserve(context.Background(), rHost, *relayInfo)
+	if err != nil {
+		panic(fmt.Sprintf("host failed to receive a relay reservation from relay, err = %v", err))
+	}
+	fmt.Printf("【normal】Reservation = %v\n", reservation)
 
 	s, err := rHost.NewStream(
 		network.WithAllowLimitedConn(context.Background(), "ping"),
