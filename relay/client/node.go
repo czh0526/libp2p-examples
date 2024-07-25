@@ -154,7 +154,6 @@ func (n *Node) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) b
 
 func (n *Node) ConnectByRelay(pid peer.ID) error {
 	rHost := n.Host
-	rHost.Network().(*swarm.Swarm).Backoff().Clear(pid)
 
 	// 连接 Relay 节点
 	if err := rHost.Connect(context.Background(), RELAY_ADDR_INFO); err != nil {
@@ -186,6 +185,8 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		return err
 	}
 
+	rHost.Network().(*swarm.Swarm).Backoff().Clear(pid)
+
 	// 创建 Relay AddrInfo
 	peerRelayInfo := peer.AddrInfo{
 		ID:    pid,
@@ -193,7 +194,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 	}
 
 	if err := rHost.Connect(context.Background(), peerRelayInfo); err != nil {
-		log.Printf("Unexpected error here. Failed to connect unreachable1 and unreachable2: %v", err)
+		log.Printf("Unexpected error here. Failed to connect host1 with host2: %v", err)
 		return err
 	}
 	log.Println("Yep, that worked!")
@@ -203,7 +204,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		network.WithAllowLimitedConn(context.Background(), "ping"),
 		pid, PING_Request)
 	if err != nil {
-		log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
+		log.Printf("Unexpected error here. Failed to new stream between host1 and host2, err = %v", err)
 		return err
 	}
 
