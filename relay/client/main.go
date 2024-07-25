@@ -73,12 +73,12 @@ func makeNode(id int, done chan bool) *Node {
 		panic(fmt.Sprintf("connect bootstrap peers failed, err = %v", err))
 	}
 
-	if err := basicHost.Connect(context.Background(), RELAY_ADDR); err != nil {
+	if err := routedHost.Connect(context.Background(), RELAY_ADDR); err != nil {
 		panic(fmt.Sprintf("Failed to connect host and relay: err = %v", err))
 
 	}
 
-	reservation, err := client.Reserve(context.Background(), basicHost, RELAY_ADDR)
+	reservation, err := client.Reserve(context.Background(), routedHost, RELAY_ADDR)
 	if err != nil {
 		panic(fmt.Sprintf("host failed to receive a relay reservation from relay, err = %v", err))
 	}
