@@ -8,8 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p"
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
-	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
-	"log"
 )
 
 var PEERS = []string{
@@ -75,11 +73,11 @@ func makeNode(id int, done chan bool) *Node {
 	}
 
 	// 创建 relay client
-	_, err = relay.New(basicHost)
-	if err != nil {
-		log.Printf("create relay client failed, err = %v", err)
-		panic(fmt.Sprintf("create relay service failed, err = %v", err))
-	}
+	//_, err = relay.New(basicHost)
+	//if err != nil {
+	//	log.Printf("create relay client failed, err = %v", err)
+	//	panic(fmt.Sprintf("create relay service failed, err = %v", err))
+	//}
 
 	return NewNode(routedHost, done)
 }
