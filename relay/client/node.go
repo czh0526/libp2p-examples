@@ -6,6 +6,7 @@ import (
 	p2p "github.com/czh0526/libp2p-examples/multipro/proto"
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/gogo/protobuf/proto"
+	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
@@ -13,7 +14,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
-	ma "github.com/multiformats/go-multiaddr"
+	maddr "github.com/multiformats/go-multiaddr"
 	"log"
 	"time"
 )
@@ -25,9 +26,11 @@ const (
 type Node struct {
 	host.Host
 	*PingProtocol
+
+	dht *kaddht.IpfsDHT
 }
 
-func NewNode(host host.Host, done chan bool) *Node {
+func NewNode(host host.Host, dht *kaddht.IpfsDHT, done chan bool) *Node {
 	node := &Node{Host: host}
 	node.PingProtocol = NewPingProtocol(node, done)
 
@@ -154,38 +157,48 @@ func (n *Node) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) b
 func (n *Node) ConnectByRelay(pid peer.ID) error {
 	rHost := n.Host
 
-	relayAddr, err := ma.NewMultiaddr(
-		fmt.Sprintf("/ip4/9.134.4.207/tcp/8000/p2p/%s/p2p-circuit/p2p/%s",
-			RELAY_ADDR.ID.String(), pid.String()))
-	if err != nil {
-		log.Printf("new multiaddr for relay failed, err = %v", err)
-		return err
-	}
-
 	rHost.Network().(*swarm.Swarm).Backoff().Clear(pid)
-	//relayInfo, err := peer.AddrInfoFromP2pAddr(relayAddr)
-	relayInfo := peer.AddrInfo{
-		ID:    pid,
-		Addrs: []ma.Multiaddr{relayAddr},
-	}
-	fmt.Printf("【normal】create relay info: %v\n", relayInfo)
+	fmt.Printf("【normal】create relay info: %v\n", RELAY_ADDR_INFO)
 
-	if err := rHost.Connect(context.Background(), relayInfo); err != nil {
+	// 1）把自身节点和 Relay 节点相连
+	if err := rHost.Connect(context.Background(), RELAY_ADDR_INFO); err != nil {
 		log.Printf("Failed to connect host and relay: err = %v", err)
 		return err
 
 	}
 
-	reservation, err := client.Reserve(context.Background(), rHost, relayInfo)
+	// 请求`relay节点`预留 slot
+	reservation, err := client.Reserve(context.Background(), rHost, RELAY_ADDR_INFO)
 	if err != nil {
 		log.Printf("host failed to receive a relay reservation from relay, err = %v", err)
 		return err
 	}
 	fmt.Printf("【normal】Reservation = %v\n", reservation)
 
+	// 创建 Relay 地址
+	relayAddr, err := maddr.NewMultiaddr(
+		"/p2p/" + RELAY_ADDR_INFO.ID.String() + "/p2p-circuit/p2p/" + pid.String())
+	if err != nil {
+		log.Printf("create relay address failed, err = %v", err)
+		return err
+	}
+
+	// 创建 Relay AddrInfo
+	peerRelayInfo := peer.AddrInfo{
+		ID:    pid,
+		Addrs: []maddr.Multiaddr{relayAddr},
+	}
+
+	if err := rHost.Connect(context.Background(), peerRelayInfo); err != nil {
+		log.Printf("Unexpected error here. Failed to connect unreachable1 and unreachable2: %v", err)
+		return err
+	}
+	log.Println("Yep, that worked!")
+
+	// New Stream
 	s, err := rHost.NewStream(
 		network.WithAllowLimitedConn(context.Background(), "ping"),
-		relayInfo.ID, PING_Request)
+		RELAY_ADDR_INFO.ID, PING_Request)
 	if err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
 		return err

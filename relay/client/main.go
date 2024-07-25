@@ -16,8 +16,7 @@ var PEERS = []string{
 }
 
 var (
-	RELAY_ADDR = convertPeer(
-		"/ip4/9.134.4.207/tcp/8000/p2p/QmfNuQPFFuqw6x2cptzRwmnZah1hJBdQ3niTBLSEpJKgmd")
+	RELAY_ADDR_INFO = convertPeer("/ip4/9.134.4.207/tcp/8000/p2p/QmfNuQPFFuqw6x2cptzRwmnZah1hJBdQ3niTBLSEpJKgmd")
 )
 
 func main() {
@@ -72,5 +71,5 @@ func makeNode(id int, done chan bool) *Node {
 		panic(fmt.Sprintf("connect bootstrap peers failed, err = %v", err))
 	}
 
-	return NewNode(routedHost, done)
+	return NewNode(routedHost, dht, done)
 }
