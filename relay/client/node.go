@@ -13,7 +13,6 @@ import (
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
-	relayv2 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
 	maddr "github.com/multiformats/go-multiaddr"
 	"log"
 	"time"
@@ -162,13 +161,6 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 
 	}
 
-	// 创建 relay client
-	_, err := relayv2.New(rHost)
-	if err != nil {
-		log.Printf("create relay client failed, err = %v", err)
-		return err
-	}
-
 	// 请求`relay节点`预留 slot
 	reservation, err := client.Reserve(context.Background(), rHost, RELAY_ADDR_INFO)
 	if err != nil {
@@ -192,6 +184,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		ID:    pid,
 		Addrs: []maddr.Multiaddr{relayAddr},
 	}
+	fmt.Printf("peer relay info => %s \n", peerRelayInfo)
 
 	if err := rHost.Connect(context.Background(), peerRelayInfo); err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 with host2: %v", err)
