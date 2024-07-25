@@ -72,10 +72,5 @@ func makeNode(id int, done chan bool) *Node {
 		panic(fmt.Sprintf("connect bootstrap peers failed, err = %v", err))
 	}
 
-	if err := routedHost.Connect(context.Background(), RELAY_ADDR); err != nil {
-		panic(fmt.Sprintf("Failed to connect host and relay: err = %v", err))
-
-	}
-
 	return NewNode(routedHost, done)
 }

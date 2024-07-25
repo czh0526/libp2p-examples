@@ -171,6 +171,11 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		return err
 	}
 
+	if err := rHost.Connect(context.Background(), *relayInfo); err != nil {
+		panic(fmt.Sprintf("Failed to connect host and relay: err = %v", err))
+
+	}
+
 	reservation, err := client.Reserve(context.Background(), rHost, *relayInfo)
 	if err != nil {
 		log.Printf("host failed to receive a relay reservation from relay, err = %v", err)
