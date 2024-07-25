@@ -171,7 +171,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 
 	// 创建 Relay 地址
 	relayAddr, err := maddr.NewMultiaddr(
-		"/ip4/9.134.4.207/tcp/8000/p2p/" + RELAY_ADDR_INFO.ID.String() + "/p2p-circuit/p2p/" + pid.String())
+		"/p2p/" + RELAY_ADDR_INFO.ID.String() + "/p2p-circuit/p2p/" + pid.String())
 	if err != nil {
 		log.Printf("create relay address failed, err = %v", err)
 		return err
