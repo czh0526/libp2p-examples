@@ -75,7 +75,7 @@ func makeNode(id int, done chan bool) *Node {
 	}
 
 	// 创建 relay client
-	_, err = relay.New(routedHost)
+	_, err = relay.New(basicHost)
 	if err != nil {
 		log.Printf("create relay client failed, err = %v", err)
 		panic(fmt.Sprintf("create relay service failed, err = %v", err))
