@@ -9,10 +9,8 @@ import (
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/peer"
-	"github.com/libp2p/go-libp2p/core/peerstore"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
-	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
 	ma "github.com/multiformats/go-multiaddr"
 	"log"
 	"time"
@@ -30,6 +28,7 @@ type Node struct {
 func NewNode(host host.Host, done chan bool) *Node {
 	node := &Node{Host: host}
 	node.PingProtocol = NewPingProtocol(node, done)
+
 	return node
 }
 
@@ -50,7 +49,7 @@ func (n *Node) run() {
 			//}
 
 			if err = n.ConnectByRelay(peerId); err != nil {
-				fmt.Printf("connect to relay host failed, err = %v\n", err)
+				fmt.Println("\n========== bad result ===========\n")
 			}
 
 			time.Sleep(10 * time.Second)
@@ -152,17 +151,6 @@ func (n *Node) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) b
 
 func (n *Node) ConnectByRelay(pid peer.ID) error {
 	rHost := n.Host
-	if err := rHost.Connect(context.Background(), RELAY_ADDR); err != nil {
-		log.Printf("Failed to connect host and relay: err = %v", err)
-		return err
-	}
-
-	reservation, err := client.Reserve(context.Background(), rHost, RELAY_ADDR)
-	if err != nil {
-		log.Printf("host failed to receive a relay reservation from relay, err = %v", err)
-		return err
-	}
-	fmt.Printf("【normal】Reservation = %v\n", reservation)
 
 	relayAddr, err := ma.NewMultiaddr(
 		fmt.Sprintf("/p2p/%s/p2p-circuit/p2p/%s",
@@ -181,12 +169,14 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		return err
 	}
 
-	rHost.Peerstore().AddAddrs(RELAY_ADDR.ID, RELAY_ADDR.Addrs, peerstore.PermanentAddrTTL)
-	if err := rHost.Connect(context.Background(), *relayInfo); err != nil {
+	s, err := rHost.NewStream(context.Background(), relayInfo.ID, "/customprotocol")
+	if err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
 		return err
 	}
 
+	defer s.Close()
 	fmt.Println("【normal】Yep, that worked!")
+
 	return nil
 }
