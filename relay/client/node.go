@@ -169,7 +169,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		return err
 	}
 
-	s, err := rHost.NewStream(context.Background(), relayInfo.ID, "/customprotocol")
+	s, err := rHost.NewStream(context.Background(), relayInfo.ID, PING_Request)
 	if err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
 		return err
