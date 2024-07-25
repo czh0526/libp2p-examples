@@ -12,6 +12,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
+	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
 	ma "github.com/multiformats/go-multiaddr"
 	"log"
 	"time"
@@ -152,6 +153,12 @@ func (n *Node) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) b
 
 func (n *Node) ConnectByRelay(pid peer.ID) error {
 	rHost := n.Host
+
+	reservation, err := client.Reserve(context.Background(), rHost, RELAY_ADDR)
+	if err != nil {
+		panic(fmt.Sprintf("host failed to receive a relay reservation from relay, err = %v", err))
+	}
+	fmt.Printf("【normal】Reservation = %v\n", reservation)
 
 	relayAddr, err := ma.NewMultiaddr(
 		fmt.Sprintf("/ip4/9.134.4.207/tcp/8000/p2p/%s/p2p-circuit/p2p/%s",

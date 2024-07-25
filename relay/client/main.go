@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p"
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
-	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
 )
 
 var PEERS = []string{
@@ -77,12 +76,6 @@ func makeNode(id int, done chan bool) *Node {
 		panic(fmt.Sprintf("Failed to connect host and relay: err = %v", err))
 
 	}
-
-	reservation, err := client.Reserve(context.Background(), routedHost, RELAY_ADDR)
-	if err != nil {
-		panic(fmt.Sprintf("host failed to receive a relay reservation from relay, err = %v", err))
-	}
-	fmt.Printf("【normal】Reservation = %v\n", reservation)
 
 	return NewNode(routedHost, done)
 }
