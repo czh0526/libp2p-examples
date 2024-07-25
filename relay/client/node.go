@@ -6,7 +6,6 @@ import (
 	p2p "github.com/czh0526/libp2p-examples/multipro/proto"
 	ggio "github.com/gogo/protobuf/io"
 	"github.com/gogo/protobuf/proto"
-	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
@@ -14,6 +13,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
+	relayv2 "github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/relay"
 	maddr "github.com/multiformats/go-multiaddr"
 	"log"
 	"time"
@@ -26,11 +26,9 @@ const (
 type Node struct {
 	host.Host
 	*PingProtocol
-
-	dht *kaddht.IpfsDHT
 }
 
-func NewNode(host host.Host, dht *kaddht.IpfsDHT, done chan bool) *Node {
+func NewNode(host host.Host, done chan bool) *Node {
 	node := &Node{Host: host}
 	node.PingProtocol = NewPingProtocol(node, done)
 
@@ -156,15 +154,20 @@ func (n *Node) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) b
 
 func (n *Node) ConnectByRelay(pid peer.ID) error {
 	rHost := n.Host
-
 	rHost.Network().(*swarm.Swarm).Backoff().Clear(pid)
-	fmt.Printf("【normal】create relay info: %v\n", RELAY_ADDR_INFO)
 
-	// 1）把自身节点和 Relay 节点相连
+	// 连接 Relay 节点
 	if err := rHost.Connect(context.Background(), RELAY_ADDR_INFO); err != nil {
 		log.Printf("Failed to connect host and relay: err = %v", err)
 		return err
 
+	}
+
+	// 创建 relay client
+	_, err := relayv2.New(rHost)
+	if err != nil {
+		log.Printf("create relay client failed, err = %v", err)
+		return err
 	}
 
 	// 请求`relay节点`预留 slot

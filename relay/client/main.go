@@ -71,5 +71,5 @@ func makeNode(id int, done chan bool) *Node {
 		panic(fmt.Sprintf("connect bootstrap peers failed, err = %v", err))
 	}
 
-	return NewNode(routedHost, dht, done)
+	return NewNode(routedHost, done)
 }
