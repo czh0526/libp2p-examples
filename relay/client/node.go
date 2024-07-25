@@ -8,6 +8,7 @@ import (
 	"github.com/gogo/protobuf/proto"
 	"github.com/libp2p/go-libp2p/core/crypto"
 	"github.com/libp2p/go-libp2p/core/host"
+	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
 	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
@@ -169,7 +170,9 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		return err
 	}
 
-	s, err := rHost.NewStream(context.Background(), relayInfo.ID, PING_Request)
+	s, err := rHost.NewStream(
+		network.WithAllowLimitedConn(context.Background(), "ping"),
+		relayInfo.ID, PING_Request)
 	if err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
 		return err
