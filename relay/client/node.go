@@ -163,21 +163,20 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 	}
 
 	rHost.Network().(*swarm.Swarm).Backoff().Clear(pid)
-	fmt.Println("【normal】Now let's attempt to connect the hosts via the relay node")
-
-	relayInfo, err := peer.AddrInfoFromP2pAddr(relayAddr)
-	if err != nil {
-		log.Printf("new addrInfo for relay failed, err = %v", err)
-		return err
+	//relayInfo, err := peer.AddrInfoFromP2pAddr(relayAddr)
+	relayInfo := peer.AddrInfo{
+		ID:    pid,
+		Addrs: []ma.Multiaddr{relayAddr},
 	}
+	fmt.Printf("【normal】create relay info: %v\n", relayInfo)
 
-	if err := rHost.Connect(context.Background(), *relayInfo); err != nil {
+	if err := rHost.Connect(context.Background(), relayInfo); err != nil {
 		log.Printf("Failed to connect host and relay: err = %v", err)
 		return err
 
 	}
 
-	reservation, err := client.Reserve(context.Background(), rHost, *relayInfo)
+	reservation, err := client.Reserve(context.Background(), rHost, relayInfo)
 	if err != nil {
 		log.Printf("host failed to receive a relay reservation from relay, err = %v", err)
 		return err
