@@ -201,7 +201,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 	// New Stream
 	s, err := rHost.NewStream(
 		network.WithAllowLimitedConn(context.Background(), "ping"),
-		RELAY_ADDR_INFO.ID, PING_Request)
+		pid, PING_Request)
 	if err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 and host2, err = %v", err)
 		return err
