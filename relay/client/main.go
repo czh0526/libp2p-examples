@@ -1,13 +1,10 @@
 package main
 
 import (
-	"context"
 	"flag"
 	"fmt"
 	"github.com/czh0526/libp2p-examples/utils"
 	"github.com/libp2p/go-libp2p"
-	kaddht "github.com/libp2p/go-libp2p-kad-dht"
-	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
 )
 
 var PEERS = []string{
@@ -34,7 +31,7 @@ func main() {
 }
 
 func makeNode(id int, done chan bool) *Node {
-	ctx := context.Background()
+	//ctx := context.Background()
 
 	// 读取固定的私钥文件
 	priv, err := utils.GeneratePrivateKey(fmt.Sprintf("host%d.pem", id))
@@ -48,36 +45,29 @@ func makeNode(id int, done chan bool) *Node {
 		libp2p.Identity(priv),
 		//libp2p.ListenAddrs(listen),
 		libp2p.NoListenAddrs,
-		libp2p.EnableRelay(),
+		libp2p.EnableRelay(), // it's important !!!
 	)
 	fmt.Printf("I am %v \n", basicHost.ID())
 	//fmt.Printf("I am listening on %v \n", listen)
 
 	// 构建 DHT
-	dht, err := kaddht.New(ctx, basicHost)
-	if err != nil {
-		panic(fmt.Sprintf("new dht failed: err = %v", err))
-	}
-	routedHost := rhost.Wrap(basicHost, dht)
-
-	// bootstrap the DHT
-	err = dht.Bootstrap(ctx)
-	if err != nil {
-		panic(fmt.Sprintf("host bootstrap failed, err = %v", err))
-	}
-
-	// connect to the ipfs nodes
-	err = bootstrapConnect(ctx, routedHost, BOOTSTRAP_PEERS)
-	if err != nil {
-		panic(fmt.Sprintf("connect bootstrap peers failed, err = %v", err))
-	}
-
-	// 创建 relay client
-	//_, err = relay.New(basicHost)
+	//dht, err := kaddht.New(ctx, basicHost)
 	//if err != nil {
-	//	log.Printf("create relay client failed, err = %v", err)
-	//	panic(fmt.Sprintf("create relay service failed, err = %v", err))
+	//	panic(fmt.Sprintf("new dht failed: err = %v", err))
+	//}
+	//routedHost := rhost.Wrap(basicHost, dht)
+
+	// 启动 DHT 服务
+	//err = dht.Bootstrap(ctx)
+	//if err != nil {
+	//	panic(fmt.Sprintf("host bootstrap failed, err = %v", err))
 	//}
 
-	return NewNode(routedHost, done)
+	// 连接 Bootstrap 节点
+	//err = bootstrapConnect(ctx, routedHost, BOOTSTRAP_PEERS)
+	//if err != nil {
+	//	panic(fmt.Sprintf("connect bootstrap peers failed, err = %v", err))
+	//}
+
+	return NewNode(basicHost, done)
 }
