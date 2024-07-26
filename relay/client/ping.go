@@ -27,7 +27,7 @@ func NewPingProtocol(node *Node) *PingProtocol {
 }
 
 func (p *PingProtocol) onPingRequest(s network.Stream) {
-	fmt.Printf("【ping】Read ping request from %s \n", s.Conn().RemotePeer())
+	fmt.Printf("【ping】Read `ping` request from %s \n", s.Conn().RemotePeer())
 	s.Close()
 }
 
