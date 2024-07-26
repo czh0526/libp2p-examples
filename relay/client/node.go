@@ -10,6 +10,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
+	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
 	maddr "github.com/multiformats/go-multiaddr"
@@ -55,7 +56,7 @@ func (n *Node) run() {
 				fmt.Printf("【ping】`%s` is connected \n", peerId)
 			}
 
-			s, err := n.ConnectByRelay(peerId)
+			s, err := n.ConnectByRelay(peerId, ECHO_Request)
 			if err != nil {
 				fmt.Println("\n========== bad result ===========")
 				fmt.Println()
@@ -154,7 +155,7 @@ func (n *Node) SendProtoMessage(s network.Stream, data proto.Message) bool {
 	return true
 }
 
-func (n *Node) ConnectByRelay(pid peer.ID) (network.Stream, error) {
+func (n *Node) ConnectByRelay(pid peer.ID, protocolId protocol.ID) (network.Stream, error) {
 	rHost := n.Host
 
 	// 连接 Relay 节点
@@ -206,7 +207,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) (network.Stream, error) {
 	// New Stream
 	s, err := rHost.NewStream(
 		network.WithAllowLimitedConn(context.Background(), "ping"),
-		pid, PING_Request)
+		pid, protocolId)
 	if err != nil {
 		log.Printf("Unexpected error here. Failed to new stream between host1 and host2, err = %v", err)
 		return nil, err
