@@ -47,11 +47,12 @@ func (n *Node) run() {
 			}
 
 			//if !n.Ping(peerId) {
-			//	fmt.Printf("【ping】`%s` is down\n", peerId)
+			//	fmt.Printf("【ping】`%s` is unreachable \n", peerId)
 			//}
 
 			if err = n.ConnectByRelay(peerId); err != nil {
-				fmt.Println("\n========== bad result ===========\n")
+				fmt.Println("\n========== bad result ===========")
+				fmt.Println()
 			}
 
 			time.Sleep(10 * time.Second)
