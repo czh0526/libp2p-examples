@@ -48,6 +48,8 @@ func (n *Node) run() {
 
 			if !n.Ping(peerId) {
 				fmt.Printf("【ping】`%s` is unreachable \n", peerId)
+			} else {
+				fmt.Printf("【ping】`%s` is connected \n", peerId)
 			}
 
 			if err = n.ConnectByRelay(peerId); err != nil {
