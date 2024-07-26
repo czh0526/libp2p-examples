@@ -40,6 +40,7 @@ func (e *EchoProtocol) onEchoRequest(s network.Stream) {
 		log.Println(err)
 		return
 	}
+	fmt.Printf("【echo】Read `echo` data %v bytes \n", len(buf))
 
 	err = proto.Unmarshal(buf, data)
 	if err != nil {
