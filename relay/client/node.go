@@ -144,8 +144,6 @@ func (n *Node) verifyData(data []byte, signature []byte, peerId peer.ID, pubKeyD
 }
 
 func (n *Node) SendProtoMessage(s network.Stream, data proto.Message) bool {
-	defer s.Close()
-
 	writer := ggio.NewFullWriter(s)
 	err := writer.WriteMsg(data)
 	if err != nil {

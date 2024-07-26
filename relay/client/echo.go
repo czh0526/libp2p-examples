@@ -108,7 +108,6 @@ func (e *EchoProtocol) Echo(s network.Stream) bool {
 		log.Println(err)
 		return false
 	}
-	s.Close()
 
 	err = proto.Unmarshal(buf, data)
 	if err != nil {

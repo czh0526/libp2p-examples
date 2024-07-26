@@ -56,6 +56,7 @@ func (p *PingProtocol) Ping(peerId peer.ID) bool {
 		log.Printf("new stream failed: err = %v", err)
 		return false
 	}
+	defer s.Close()
 
 	ok := p.node.SendProtoMessage(s, req)
 	if !ok {
