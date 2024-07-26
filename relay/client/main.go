@@ -8,7 +8,6 @@ import (
 	"github.com/libp2p/go-libp2p"
 	kaddht "github.com/libp2p/go-libp2p-kad-dht"
 	rhost "github.com/libp2p/go-libp2p/p2p/host/routed"
-	ma "github.com/multiformats/go-multiaddr"
 )
 
 var PEERS = []string{
@@ -44,15 +43,15 @@ func makeNode(id int, done chan bool) *Node {
 	}
 
 	// 构建 BasicHost
-	listen, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/10000"))
+	//listen, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/10000"))
 	basicHost, _ := libp2p.New(
 		libp2p.Identity(priv),
-		libp2p.ListenAddrs(listen),
-		//libp2p.NoListenAddrs,
+		//libp2p.ListenAddrs(listen),
+		libp2p.NoListenAddrs,
 		libp2p.EnableRelay(), // it's important !!!
 	)
 	fmt.Printf("I am %v \n", basicHost.ID())
-	fmt.Printf("I am listening on %v \n", listen)
+	//fmt.Printf("I am listening on %v \n", listen)
 
 	// 构建 DHT
 	dht, err := kaddht.New(ctx, basicHost)
