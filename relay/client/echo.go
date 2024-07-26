@@ -100,5 +100,22 @@ func (e *EchoProtocol) Echo(s network.Stream) bool {
 	e.requests[req.MessageData.Id] = req
 	fmt.Printf("【echo】 Echo to: %s was sent, Message: %s \n", s.Conn().RemotePeer(), req.Message)
 
+	// 读取 Response
+	data := &p2p.EchoResponse{}
+	buf, err := io.ReadAll(s)
+	if err != nil {
+		s.Reset()
+		log.Println(err)
+		return false
+	}
+	s.Close()
+
+	err = proto.Unmarshal(buf, data)
+	if err != nil {
+		log.Println(err)
+		return false
+	}
+	fmt.Printf("【echo】 read Echo from: %s. \n", s.Conn().RemotePeer())
+
 	return true
 }
