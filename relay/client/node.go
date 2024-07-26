@@ -62,8 +62,9 @@ func (n *Node) run() {
 				fmt.Println()
 				continue
 			}
+			s.Close()
 
-			n.Echo(s)
+			//n.Echo(s)
 			fmt.Println("\n========== good result ===========")
 			fmt.Println()
 		}
