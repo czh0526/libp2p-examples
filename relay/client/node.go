@@ -55,6 +55,9 @@ func (n *Node) run() {
 			if err = n.ConnectByRelay(peerId); err != nil {
 				fmt.Println("\n========== bad result ===========")
 				fmt.Println()
+				continue
+			} else {
+				fmt.Println("\n========== good result ===========")
 			}
 
 			time.Sleep(10 * time.Second)
@@ -170,8 +173,8 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		log.Printf("host failed to receive a relay reservation from relay, err = %v", err)
 		return err
 	}
-	fmt.Println("【normal】Reservation success")
-	fmt.Printf("\t => Expiration = %s\n", reservation.Expiration)
+	fmt.Println("【relay】Reservation success")
+	fmt.Printf("\t=> Expiration = %s\n", reservation.Expiration)
 	for _, addr := range reservation.Addrs {
 		fmt.Printf("\t=> addr = %s \n", addr)
 	}
@@ -191,8 +194,8 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		ID:    pid,
 		Addrs: []maddr.Multiaddr{relayAddr},
 	}
-	fmt.Println("【normal】create AddrInfo for relay link success")
-	fmt.Printf("\t => id = %s \n", peerRelayInfo.ID)
+	fmt.Println("【relay】create AddrInfo for relay link success")
+	fmt.Printf("\t=> id = %s \n", peerRelayInfo.ID)
 	for _, addr := range peerRelayInfo.Addrs {
 		fmt.Printf("\t=> addr = %s \n", addr)
 	}
@@ -201,7 +204,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		log.Printf("Unexpected error here. Failed to connect host1 with host2: %v", err)
 		return err
 	}
-	log.Println("Yep, that worked!")
+	fmt.Printf("【relay】connect to peer(`%s`) success.\n", peerRelayInfo.ID)
 
 	// New Stream
 	s, err := rHost.NewStream(
@@ -211,9 +214,9 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		log.Printf("Unexpected error here. Failed to new stream between host1 and host2, err = %v", err)
 		return err
 	}
-
 	defer s.Close()
-	fmt.Println("【normal】Yep, that worked!")
+
+	fmt.Printf("【relay】new stream to peer(`%s`) success.\n", peerRelayInfo.ID)
 
 	return nil
 }
