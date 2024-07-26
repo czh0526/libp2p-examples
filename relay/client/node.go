@@ -10,7 +10,6 @@ import (
 	"github.com/libp2p/go-libp2p/core/host"
 	"github.com/libp2p/go-libp2p/core/network"
 	"github.com/libp2p/go-libp2p/core/peer"
-	"github.com/libp2p/go-libp2p/core/protocol"
 	"github.com/libp2p/go-libp2p/p2p/net/swarm"
 	"github.com/libp2p/go-libp2p/p2p/protocol/circuitv2/client"
 	maddr "github.com/multiformats/go-multiaddr"
@@ -25,11 +24,13 @@ const (
 type Node struct {
 	host.Host
 	*PingProtocol
+	*EchoProtocol
 }
 
 func NewNode(host host.Host) *Node {
 	node := &Node{Host: host}
 	node.PingProtocol = NewPingProtocol(node)
+	node.EchoProtocol = NewEchoProtocol(node)
 
 	return node
 }
@@ -54,13 +55,16 @@ func (n *Node) run() {
 				fmt.Printf("【ping】`%s` is connected \n", peerId)
 			}
 
-			if err = n.ConnectByRelay(peerId); err != nil {
+			s, err := n.ConnectByRelay(peerId)
+			if err != nil {
 				fmt.Println("\n========== bad result ===========")
 				fmt.Println()
 				continue
-			} else {
-				fmt.Println("\n========== good result ===========")
 			}
+
+			n.Echo(s)
+			fmt.Println("\n========== good result ===========")
+			fmt.Println()
 		}
 	}
 }
@@ -139,16 +143,11 @@ func (n *Node) verifyData(data []byte, signature []byte, peerId peer.ID, pubKeyD
 	return res
 }
 
-func (n *Node) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) bool {
-	s, err := n.NewStream(context.Background(), id, p)
-	if err != nil {
-		log.Println(err)
-		return false
-	}
+func (n *Node) SendProtoMessage(s network.Stream, data proto.Message) bool {
 	defer s.Close()
 
 	writer := ggio.NewFullWriter(s)
-	err = writer.WriteMsg(data)
+	err := writer.WriteMsg(data)
 	if err != nil {
 		log.Println(err)
 		s.Reset()
@@ -157,13 +156,13 @@ func (n *Node) SendProtoMessage(id peer.ID, p protocol.ID, data proto.Message) b
 	return true
 }
 
-func (n *Node) ConnectByRelay(pid peer.ID) error {
+func (n *Node) ConnectByRelay(pid peer.ID) (network.Stream, error) {
 	rHost := n.Host
 
 	// 连接 Relay 节点
 	if err := rHost.Connect(context.Background(), RELAY_ADDR_INFO); err != nil {
 		log.Printf("Failed to connect host and relay: err = %v", err)
-		return err
+		return nil, err
 
 	}
 
@@ -171,7 +170,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 	reservation, err := client.Reserve(context.Background(), rHost, RELAY_ADDR_INFO)
 	if err != nil {
 		log.Printf("host failed to receive a relay reservation from relay, err = %v", err)
-		return err
+		return nil, err
 	}
 	fmt.Println("【relay】Reservation success")
 	fmt.Printf("\t=> Expiration = %s\n", reservation.Expiration)
@@ -184,7 +183,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		fmt.Sprintf("%s/p2p-circuit/p2p/%s", RELAY_ENDPOINT, pid.String()))
 	if err != nil {
 		log.Printf("create relay address failed, err = %v", err)
-		return err
+		return nil, err
 	}
 
 	rHost.Network().(*swarm.Swarm).Backoff().Clear(pid)
@@ -202,7 +201,7 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 
 	if err := rHost.Connect(context.Background(), peerRelayInfo); err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 with host2: %v", err)
-		return err
+		return nil, err
 	}
 	fmt.Printf("【relay】connect to peer(`%s`) success.\n", peerRelayInfo.ID)
 
@@ -212,11 +211,9 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		pid, PING_Request)
 	if err != nil {
 		log.Printf("Unexpected error here. Failed to new stream between host1 and host2, err = %v", err)
-		return err
+		return nil, err
 	}
-	defer s.Close()
 
 	fmt.Printf("【relay】new stream to peer(`%s`) success.\n", peerRelayInfo.ID)
-
-	return nil
+	return s, nil
 }

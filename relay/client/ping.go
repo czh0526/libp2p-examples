@@ -1,6 +1,7 @@
 package main
 
 import (
+	"context"
 	"fmt"
 	p2p "github.com/czh0526/libp2p-examples/multipro/proto"
 	"github.com/google/uuid"
@@ -50,7 +51,13 @@ func (p *PingProtocol) Ping(peerId peer.ID) bool {
 	p.requests[req.MessageData.Id] = req
 	p.mu.Unlock()
 
-	ok := p.node.SendProtoMessage(peerId, PING_Request, req)
+	s, err := p.node.NewStream(context.Background(), peerId, PING_Request)
+	if err != nil {
+		log.Printf("new stream failed: err = %v", err)
+		return false
+	}
+
+	ok := p.node.SendProtoMessage(s, req)
 	if !ok {
 		return false
 	}
