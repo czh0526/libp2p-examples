@@ -17,19 +17,17 @@ type PingProtocol struct {
 	node     *Node
 	mu       sync.Mutex
 	requests map[string]*p2p.PingRequest
-	done     chan bool
 }
 
-func NewPingProtocol(node *Node, done chan bool) *PingProtocol {
-	p := &PingProtocol{node: node, requests: make(map[string]*p2p.PingRequest), done: done}
+func NewPingProtocol(node *Node) *PingProtocol {
+	p := &PingProtocol{node: node, requests: make(map[string]*p2p.PingRequest)}
 	node.SetStreamHandler(PING_Request, p.onPingRequest)
 	return p
 }
 
 func (p *PingProtocol) onPingRequest(s network.Stream) {
-	log.Printf("Read ping request.")
+	fmt.Printf("【ping】Read ping request from %s \n", s.Conn().RemotePeer())
 	s.Close()
-	p.done <- true
 }
 
 func (p *PingProtocol) Ping(peerId peer.ID) bool {

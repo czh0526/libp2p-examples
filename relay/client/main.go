@@ -29,13 +29,12 @@ func main() {
 		panic("id should be greater than 0")
 	}
 
-	done := make(chan bool, 1)
-	host := makeNode(*id, done)
+	host := makeNode(*id)
 
 	host.run()
 }
 
-func makeNode(id int, done chan bool) *Node {
+func makeNode(id int) *Node {
 	ctx := context.Background()
 
 	// 读取固定的私钥文件
@@ -74,5 +73,5 @@ func makeNode(id int, done chan bool) *Node {
 		panic(fmt.Sprintf("connect bootstrap peers failed, err = %v", err))
 	}
 
-	return NewNode(routedHost, done)
+	return NewNode(routedHost)
 }

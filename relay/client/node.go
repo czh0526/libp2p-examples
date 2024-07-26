@@ -27,9 +27,9 @@ type Node struct {
 	*PingProtocol
 }
 
-func NewNode(host host.Host, done chan bool) *Node {
+func NewNode(host host.Host) *Node {
 	node := &Node{Host: host}
-	node.PingProtocol = NewPingProtocol(node, done)
+	node.PingProtocol = NewPingProtocol(node)
 
 	return node
 }
@@ -170,7 +170,11 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		log.Printf("host failed to receive a relay reservation from relay, err = %v", err)
 		return err
 	}
-	fmt.Printf("【normal】Reservation = %v\n", reservation)
+	fmt.Println("【normal】Reservation success")
+	fmt.Printf("\t => Expiration = %s\n", reservation.Expiration)
+	for _, addr := range reservation.Addrs {
+		fmt.Printf("\t=> addr = %s \n", addr)
+	}
 
 	// 创建 Relay 地址
 	relayAddr, err := maddr.NewMultiaddr(
@@ -187,7 +191,11 @@ func (n *Node) ConnectByRelay(pid peer.ID) error {
 		ID:    pid,
 		Addrs: []maddr.Multiaddr{relayAddr},
 	}
-	fmt.Printf("peer relay info => %s \n", peerRelayInfo)
+	fmt.Println("【normal】create AddrInfo for relay link success")
+	fmt.Printf("\t => id = %s \n", peerRelayInfo.ID)
+	for _, addr := range peerRelayInfo.Addrs {
+		fmt.Printf("\t=> addr = %s \n", addr)
+	}
 
 	if err := rHost.Connect(context.Background(), peerRelayInfo); err != nil {
 		log.Printf("Unexpected error here. Failed to connect host1 with host2: %v", err)
