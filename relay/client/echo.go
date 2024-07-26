@@ -31,6 +31,7 @@ func NewEchoProtocol(node *Node) *EchoProtocol {
 
 func (e *EchoProtocol) onEchoRequest(s network.Stream) {
 	defer s.Close()
+	fmt.Printf("【ping】Read ping request from %s \n", s.Conn().RemotePeer())
 
 	data := &p2p.EchoRequest{}
 	buf, err := io.ReadAll(s)
@@ -78,7 +79,7 @@ func (e *EchoProtocol) onEchoRequest(s network.Stream) {
 
 func (e *EchoProtocol) Echo(s network.Stream) bool {
 	defer s.Close()
-	fmt.Printf("【echo】 Plan to send echo to: %s", s.Conn().RemotePeer())
+	fmt.Printf("【echo】 Plan to send echo to: %s. \n", s.Conn().RemotePeer())
 
 	req := &p2p.EchoRequest{
 		MessageData: e.node.NewMessageData(uuid.New().String(), false),
