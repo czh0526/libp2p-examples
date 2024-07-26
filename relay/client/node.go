@@ -38,6 +38,8 @@ func (n *Node) run() {
 	myId := n.ID()
 	for {
 		for _, pid := range PEERS {
+			time.Sleep(5 * time.Second)
+
 			peerId, err := peer.Decode(pid)
 			if err != nil {
 				fmt.Printf("decode peer id(`%s`) failed: err = %v\n", pid, err)
@@ -59,8 +61,6 @@ func (n *Node) run() {
 			} else {
 				fmt.Println("\n========== good result ===========")
 			}
-
-			time.Sleep(10 * time.Second)
 		}
 	}
 }
