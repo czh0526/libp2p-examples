@@ -25,7 +25,7 @@ func NewEchoProtocol(node *Node) *EchoProtocol {
 		node:     node,
 		requests: make(map[string]*p2p.EchoRequest),
 	}
-	node.SetStreamHandler(ECHO_Request, e.onEchoRequest)
+	//node.SetStreamHandler(ECHO_Request, e.onEchoRequest)
 	return &e
 }
 
