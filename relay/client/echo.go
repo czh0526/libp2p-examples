@@ -57,25 +57,8 @@ func (e *EchoProtocol) onEchoRequest(s network.Stream) {
 		return
 	}
 
-	fmt.Printf("【echo】Sending echo response to %s, Message = %v\n",
-		s.Conn().RemotePeer().String(), data.Message)
-	// create echo response
-	resp := &p2p.EchoResponse{
-		Message:     data.Message,
-		MessageData: e.node.NewMessageData(data.MessageData.Id, false),
-	}
-	signature, err := e.node.SignProtoMessage(resp)
-	if err != nil {
-		log.Printf("failed to sign response, err = %v", err)
-		return
-	}
-	resp.MessageData.Sign = signature
-
-	// send echo response
-	ok := e.node.SendProtoMessage(s, resp)
-	if !ok {
-		fmt.Printf("【echo】Echo response to %s sent.", s.Conn().RemotePeer())
-	}
+	fmt.Printf("【echo】verify echo response successfully, Message = %v\n",
+		data.Message)
 }
 
 func (e *EchoProtocol) Echo(s network.Stream) bool {
@@ -102,23 +85,6 @@ func (e *EchoProtocol) Echo(s network.Stream) bool {
 
 	e.requests[req.MessageData.Id] = req
 	fmt.Printf("【echo】 Echo to: %s was sent, Message: %s \n", s.Conn().RemotePeer(), req.Message)
-
-	// 读取 Response
-	data := &p2p.EchoResponse{}
-	buf, err := io.ReadAll(s)
-	if err != nil {
-		s.Reset()
-		log.Println(err)
-		return false
-	}
-	fmt.Printf("【echo】 read Echo from: %s, data size = $v \n", s.Conn().RemotePeer(), len(buf))
-
-	err = proto.Unmarshal(buf, data)
-	if err != nil {
-		log.Println(err)
-		return false
-	}
-	fmt.Printf("【echo】 unmarshal echo response from %s. \n", s.Conn().RemotePeer())
 
 	return true
 }
