@@ -47,9 +47,8 @@ func makeNode(id int) *Node {
 	listen, _ := ma.NewMultiaddr(fmt.Sprintf("/ip4/0.0.0.0/tcp/10000"))
 	basicHost, _ := libp2p.New(
 		libp2p.Identity(priv),
-		libp2p.ListenAddrs(listen),
-		//libp2p.NoListenAddrs,
-		libp2p.EnableRelay(), // it's important !!!
+		libp2p.ListenAddrs(listen), // replace `NoListenAddrs constant`
+		libp2p.EnableRelay(),       // it's important !!!
 	)
 	fmt.Printf("I am %v \n", basicHost.ID())
 	fmt.Printf("I am listening on %v \n", listen)
