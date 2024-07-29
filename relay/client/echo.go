@@ -79,6 +79,7 @@ func (e *EchoProtocol) onEchoRequest(s network.Stream) {
 }
 
 func (e *EchoProtocol) Echo(s network.Stream) bool {
+	defer s.Close()
 	fmt.Printf("【echo】 Plan to send echo to: %s. \n", s.Conn().RemotePeer())
 
 	req := &p2p.EchoRequest{
@@ -98,7 +99,6 @@ func (e *EchoProtocol) Echo(s network.Stream) bool {
 	if !ok {
 		return false
 	}
-	s.Close()
 
 	e.requests[req.MessageData.Id] = req
 	fmt.Printf("【echo】 Echo to: %s was sent, Message: %s \n", s.Conn().RemotePeer(), req.Message)
@@ -111,13 +111,14 @@ func (e *EchoProtocol) Echo(s network.Stream) bool {
 		log.Println(err)
 		return false
 	}
+	fmt.Printf("【echo】 read Echo from: %s, data size = $v \n", s.Conn().RemotePeer(), len(buf))
 
 	err = proto.Unmarshal(buf, data)
 	if err != nil {
 		log.Println(err)
 		return false
 	}
-	fmt.Printf("【echo】 read Echo from: %s. \n", s.Conn().RemotePeer())
+	fmt.Printf("【echo】 unmarshal echo response from %s. \n", s.Conn().RemotePeer())
 
 	return true
 }
