@@ -108,7 +108,7 @@ func makeHost(id int, port int) (host.Host, error) {
 }
 
 func startPeer(h host.Host, streamHandler network.StreamHandler) {
-	h.SetStreamHandler("/chat/1.0.0", streamHandler)
+	h.SetStreamHandler(NameSpace, streamHandler)
 }
 
 func handleStream(stream network.Stream) {
