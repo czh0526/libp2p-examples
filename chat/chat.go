@@ -94,13 +94,16 @@ func writeData(rw *bufio.ReadWriter) {
 			log.Println(err)
 			return
 		}
+		fmt.Printf("read data from console => %s\n", sendData)
 
 		_, err = rw.WriteString(fmt.Sprintf("%s\n", sendData))
 		if err != nil {
+			log.Printf("write data to remote failed, err = %v", err)
 			return
 		}
 		err = rw.Flush()
 		if err != nil {
+			log.Printf("flush data to remote failed, err = %v", err)
 			return
 		}
 	}
