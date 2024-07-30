@@ -20,7 +20,6 @@ func main() {
 	sourcePort := flag.Int("sp", 0, "Source port number")
 	dest := flag.String("d", "", "Destination multiaddr string")
 	help := flag.Bool("help", false, "Show help")
-
 	flag.Parse()
 
 	if *help {

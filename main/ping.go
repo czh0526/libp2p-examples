@@ -13,6 +13,7 @@ import (
 )
 
 func main() {
+	// 构建节点
 	node, err := libp2p.New(
 		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/2000"),
 		libp2p.Ping(false))
@@ -21,6 +22,7 @@ func main() {
 	}
 	fmt.Printf("Listen addresses: %v \n", node.Addrs())
 
+	// 构建服务
 	pingService := &ping.PingService{Host: node}
 	node.SetStreamHandler(ping.ID, pingService.PingHandler)
 
@@ -32,7 +34,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	fmt.Printf("libp2p node address: %v", addrs)
+	fmt.Printf("libp2p node address: %v \n", addrs)
 
 	if len(os.Args) > 1 {
 		addr, err := multiaddr.NewMultiaddr(os.Args[1])
