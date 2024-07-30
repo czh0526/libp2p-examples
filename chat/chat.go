@@ -95,8 +95,14 @@ func writeData(rw *bufio.ReadWriter) {
 			return
 		}
 
-		rw.WriteString(fmt.Sprintf("%s\n", sendData))
-		rw.Flush()
+		_, err = rw.WriteString(fmt.Sprintf("%s\n", sendData))
+		if err != nil {
+			return
+		}
+		err = rw.Flush()
+		if err != nil {
+			return
+		}
 	}
 }
 
