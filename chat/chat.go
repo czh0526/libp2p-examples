@@ -32,7 +32,7 @@ func main() {
 	}
 
 	if *dest == "" {
-		basicHost, err := makeNode(1, *sourcePort)
+		basicHost, err := makeHost(1, *sourcePort)
 		if err != nil {
 			log.Println(err)
 			return
@@ -41,7 +41,7 @@ func main() {
 		startPeer(basicHost, handleStream)
 
 	} else {
-		basicHost, err := makeNode(2, *sourcePort)
+		basicHost, err := makeHost(2, *sourcePort)
 		if err != nil {
 			log.Println(err)
 			return
@@ -109,7 +109,7 @@ func writeData(rw *bufio.ReadWriter) {
 	}
 }
 
-func makeNode(id int, port int) (host.Host, error) {
+func makeHost(id int, port int) (host.Host, error) {
 	privKey, err := utils.GeneratePrivateKey(
 		fmt.Sprintf("host%v.pem", id))
 	if err != nil {
