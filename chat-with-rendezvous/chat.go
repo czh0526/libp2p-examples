@@ -18,7 +18,7 @@ import (
 	"time"
 )
 
-const NameSpace = "chat-test"
+const NameSpace = "/chat-test"
 const PORT = 3001
 
 func main() {
