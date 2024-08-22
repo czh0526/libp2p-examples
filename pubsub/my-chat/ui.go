@@ -66,10 +66,12 @@ func NewChatUI(chatroom *ChatRoom) *ChatUI {
 	app.SetRoot(flex, true)
 
 	return &ChatUI{
-		chatroom: chatroom,
-		app:      app,
-		msgW:     msgBox,
-		inputCh:  inputCh,
+		chatroom:  chatroom,
+		app:       app,
+		peersList: peersList,
+		msgW:      msgBox,
+		inputCh:   inputCh,
+		doneCh:    make(chan struct{}),
 	}
 }
 
