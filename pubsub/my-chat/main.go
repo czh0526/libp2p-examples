@@ -11,6 +11,7 @@ import (
 	"github.com/libp2p/go-libp2p/core/peer"
 	drouting "github.com/libp2p/go-libp2p/p2p/discovery/routing"
 	dutil "github.com/libp2p/go-libp2p/p2p/discovery/util"
+	"log"
 	"os"
 	"sync"
 	"time"
@@ -30,6 +31,15 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("构建host失败，err = %v", err))
 	}
+
+	// 生成日志
+	file, err := os.OpenFile(fmt.Sprintf(
+		"chat_%s.log", shortID(h.ID())), os.O_APPEND|os.O_CREATE|os.O_WRONLY, 0644)
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+	log.SetOutput(file)
 
 	// 启动节点发现模块
 	go discoverPeers(ctx, h)
@@ -66,7 +76,7 @@ func discoverPeers(ctx context.Context, h host.Host) {
 
 	anyConnected := false
 	for !anyConnected {
-		fmt.Println("searching for peers...")
+		log.Println("searching for peers...")
 		peerChan, err := routingDiscovery.FindPeers(ctx, *roomFlag)
 		if err != nil {
 			panic(err)
@@ -77,15 +87,15 @@ func discoverPeers(ctx context.Context, h host.Host) {
 			}
 			err := h.Connect(ctx, p)
 			if err != nil {
-				fmt.Printf("Failed connecting to peer(`%s`), err = %v\n", p.ID, err)
+				log.Printf("Failed connecting to peer(`%s`), err = %v\n", p.ID, err)
 			} else {
-				fmt.Printf("Connected to peer(`%s`)\n", p.ID)
+				log.Printf("Connected to peer(`%s`)\n", p.ID)
 				anyConnected = true
 			}
 		}
 		time.Sleep(10 * time.Second)
 	}
-	fmt.Println("Peer discovery complete")
+	log.Println("Peer discovery complete")
 }
 
 func initDHT(ctx context.Context, h host.Host) *dht.IpfsDHT {
@@ -101,16 +111,16 @@ func initDHT(ctx context.Context, h host.Host) *dht.IpfsDHT {
 	for _, peerAddr := range BOOTSTRAP_PEERS {
 		peerInfo, err := peer.AddrInfoFromP2pAddr(peerAddr)
 		if err != nil {
-			fmt.Printf("parse bootstrap peer address failed, err = %v \n", err)
+			log.Printf("parse bootstrap peer address failed, err = %v \n", err)
 			continue
 		}
 		wg.Add(1)
 		go func() {
 			defer wg.Done()
 			if err := h.Connect(ctx, *peerInfo); err != nil {
-				fmt.Printf("connect bootstrap peer failed, err = %v \n", err)
+				log.Printf("connect bootstrap peer failed, err = %v \n", err)
 			} else {
-				fmt.Printf("Connected to bootstrap peer %s\n", peerInfo.ID)
+				log.Printf("Connected to bootstrap peer %s\n", peerInfo.ID)
 			}
 		}()
 	}
