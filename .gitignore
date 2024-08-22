@@ -3,3 +3,5 @@ multipro/multipro
 relay/relay/relay
 relay/client/client
 chat-with-rendezvous/chat
+pubsub/chat/chat
+pubsub/chat-with-rendezvous/chat
