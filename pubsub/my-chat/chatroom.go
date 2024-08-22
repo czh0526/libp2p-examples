@@ -99,3 +99,7 @@ func (chatroom *ChatRoom) Publish(message string) error {
 
 	return chatroom.topic.Publish(chatroom.ctx, msgBytes)
 }
+
+func (chatroom *ChatRoom) ListPeers() []peer.ID {
+	return chatroom.ps.ListPeers(topicName(chatroom.roomName))
+}

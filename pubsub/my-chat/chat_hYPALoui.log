@@ -1,0 +1,130 @@
+2024/08/22 16:31:51 【IpfsDHT】schedule fixLowPeers ... 2024-08-22 16:31:51 
+2024/08/22 16:31:52 Connected to bootstrap peer QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:31:52 searching for peers...
+2024/08/22 16:31:52 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:31:52 【IpfsDHT】schedule fixLowPeers ... 2024-08-22 16:31:52 
+2024/08/22 16:31:52 	 try to find peer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:31:52 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:31:52 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:31:52 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:32:02 searching for peers...
+2024/08/22 16:32:02 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial tcp4 127.0.0.1:40081: connect: connection refused
+  * [/ip4/9.134.4.207/tcp/40081] failed to negotiate security protocol: message did not have trailing newline
+2024/08/22 16:32:02 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial tcp4 127.0.0.1:52477: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/52477] dial tcp4 192.168.17.250:52477: connect: connection refused
+2024/08/22 16:32:02 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:32:02 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial tcp4 127.0.0.1:53457: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/53457] dial tcp4 192.168.17.250:53457: connect: connection refused
+2024/08/22 16:32:12 searching for peers...
+2024/08/22 16:32:12 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial tcp4 127.0.0.1:40081: connect: connection refused
+  * [/ip4/9.134.4.207/tcp/40081] failed to negotiate security protocol: message did not have trailing newline
+2024/08/22 16:32:12 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial tcp4 127.0.0.1:52477: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/52477] dial tcp4 192.168.17.250:52477: connect: connection refused
+2024/08/22 16:32:12 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:32:12 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial tcp4 127.0.0.1:53457: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/53457] dial tcp4 192.168.17.250:53457: connect: connection refused
+2024/08/22 16:32:22 searching for peers...
+2024/08/22 16:32:22 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial tcp4 127.0.0.1:40081: connect: connection refused
+  * [/ip4/9.134.4.207/tcp/40081] failed to negotiate security protocol: message did not have trailing newline
+2024/08/22 16:32:22 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial tcp4 127.0.0.1:52477: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/52477] dial tcp4 192.168.17.250:52477: connect: connection refused
+2024/08/22 16:32:22 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:32:22 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial tcp4 127.0.0.1:53457: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/53457] dial tcp4 192.168.17.250:53457: connect: connection refused
+2024/08/22 16:32:32 searching for peers...
+2024/08/22 16:32:32 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial tcp4 127.0.0.1:40081: connect: connection refused
+  * [/ip4/9.134.4.207/tcp/40081] failed to negotiate security protocol: message did not have trailing newline
+2024/08/22 16:32:32 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial tcp4 127.0.0.1:52477: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/52477] dial tcp4 192.168.17.250:52477: connect: connection refused
+2024/08/22 16:32:32 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:32:32 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial tcp4 127.0.0.1:53457: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/53457] dial tcp4 192.168.17.250:53457: connect: connection refused
+2024/08/22 16:32:42 searching for peers...
+2024/08/22 16:32:42 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial backoff
+  * [/ip4/9.134.4.207/tcp/40081] dial backoff
+2024/08/22 16:32:42 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial backoff
+  * [/ip4/192.168.17.250/tcp/52477] dial backoff
+2024/08/22 16:32:42 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:32:42 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial backoff
+  * [/ip4/192.168.17.250/tcp/53457] dial backoff
+2024/08/22 16:32:52 searching for peers...
+2024/08/22 16:32:53 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial tcp4 127.0.0.1:40081: connect: connection refused
+  * [/ip4/9.134.4.207/tcp/40081] failed to negotiate security protocol: message did not have trailing newline
+2024/08/22 16:32:53 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial tcp4 127.0.0.1:52477: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/52477] dial tcp4 192.168.17.250:52477: connect: connection refused
+2024/08/22 16:32:53 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:32:53 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial tcp4 127.0.0.1:53457: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/53457] dial tcp4 192.168.17.250:53457: connect: connection refused
+2024/08/22 16:33:03 searching for peers...
+2024/08/22 16:33:03 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial backoff
+  * [/ip4/9.134.4.207/tcp/40081] dial backoff
+2024/08/22 16:33:03 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial backoff
+  * [/ip4/192.168.17.250/tcp/52477] dial backoff
+2024/08/22 16:33:03 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:33:03 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial backoff
+  * [/ip4/192.168.17.250/tcp/53457] dial backoff
+2024/08/22 16:33:13 searching for peers...
+2024/08/22 16:33:13 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial backoff
+  * [/ip4/9.134.4.207/tcp/40081] dial backoff
+2024/08/22 16:33:13 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial backoff
+  * [/ip4/192.168.17.250/tcp/52477] dial backoff
+2024/08/22 16:33:13 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:33:13 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial backoff
+  * [/ip4/192.168.17.250/tcp/53457] dial backoff
+2024/08/22 16:33:23 searching for peers...
+2024/08/22 16:33:23 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial tcp4 127.0.0.1:40081: connect: connection refused
+  * [/ip4/9.134.4.207/tcp/40081] failed to negotiate security protocol: message did not have trailing newline
+2024/08/22 16:33:23 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial tcp4 127.0.0.1:52477: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/52477] dial tcp4 192.168.17.250:52477: connect: connection refused
+2024/08/22 16:33:23 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:33:23 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial tcp4 127.0.0.1:53457: connect: connection refused
+  * [/ip4/192.168.17.250/tcp/53457] dial tcp4 192.168.17.250:53457: connect: connection refused
+2024/08/22 16:33:33 searching for peers...
+2024/08/22 16:33:33 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial backoff
+  * [/ip4/9.134.4.207/tcp/40081] dial backoff
+2024/08/22 16:33:33 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial backoff
+  * [/ip4/192.168.17.250/tcp/52477] dial backoff
+2024/08/22 16:33:33 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:33:33 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial backoff
+  * [/ip4/192.168.17.250/tcp/53457] dial backoff
+2024/08/22 16:33:43 searching for peers...
+2024/08/22 16:33:43 Failed connecting to peer(`12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm`), err = failed to dial: failed to dial 12D3KooWQs8LrkSf6D13iQs5v7PjZk6sKtwQuWFq5ZzYZRWjLoqm: all dials failed
+  * [/ip4/127.0.0.1/tcp/40081] dial backoff
+  * [/ip4/9.134.4.207/tcp/40081] dial backoff
+2024/08/22 16:33:43 Failed connecting to peer(`12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5`), err = failed to dial: failed to dial 12D3KooWJpvcdoM6oMUmQBEnnyh89q8TvBEXcyhhAKkx5gYSE4U5: all dials failed
+  * [/ip4/127.0.0.1/tcp/52477] dial backoff
+  * [/ip4/192.168.17.250/tcp/52477] dial backoff
+2024/08/22 16:33:43 【RoutingTable】addPeer => QmWiG7ExhxNokqzghHrxC25m3W8gVEftgcrZsJKhPv1Y74
+2024/08/22 16:33:43 Failed connecting to peer(`12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT`), err = failed to dial: failed to dial 12D3KooWCfC9FbwnTXiJedqVaqRT8LypvH91NraJ6L1CPmgRfeAT: all dials failed
+  * [/ip4/127.0.0.1/tcp/53457] dial backoff
+  * [/ip4/192.168.17.250/tcp/53457] dial backoff

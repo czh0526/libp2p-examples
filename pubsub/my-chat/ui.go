@@ -5,6 +5,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 	"io"
+	"time"
 )
 
 type ChatUI struct {
@@ -84,6 +85,10 @@ func (ui *ChatUI) end() {
 }
 
 func (ui *ChatUI) handleEvents() {
+
+	peerRefreshTicker := time.NewTicker(time.Second)
+	defer peerRefreshTicker.Stop()
+
 	for {
 		select {
 		case input := <-ui.inputCh: // 读取用户输入
@@ -97,6 +102,10 @@ func (ui *ChatUI) handleEvents() {
 		case m := <-ui.chatroom.Messages: // 读取聊天室内容
 			{
 				ui.displayChatMessage(m)
+			}
+		case <-peerRefreshTicker.C:
+			{
+				ui.refreshPeers()
 			}
 		case <-ui.chatroom.ctx.Done(): // 聊天室结束
 			{
@@ -122,4 +131,14 @@ func (ui *ChatUI) displaySelfMessage(m string) {
 
 func withColor(color, msg string) string {
 	return fmt.Sprintf("[%s]%s[-]", color, msg)
+}
+
+func (ui *ChatUI) refreshPeers() {
+	peers := ui.chatroom.ListPeers()
+
+	ui.peersList.Clear()
+	for _, peer := range peers {
+		fmt.Fprintf(ui.peersList, shortID(peer))
+	}
+	ui.app.Draw()
 }
