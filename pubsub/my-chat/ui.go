@@ -145,8 +145,8 @@ func (ui *ChatUI) refreshPeers() {
 	peers := ui.chatroom.ListPeers()
 
 	ui.peersList.Clear()
-	for _, peer := range peers {
-		fmt.Fprintf(ui.peersList, shortID(peer))
+	for _, p := range peers {
+		fmt.Fprintln(ui.peersList, shortID(p))
 	}
 	ui.app.Draw()
 }
