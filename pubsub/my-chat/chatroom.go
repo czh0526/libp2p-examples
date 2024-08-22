@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
 	"github.com/libp2p/go-libp2p/core/peer"
+	"log"
 )
 
 const ChatRoomBufSize = 128
@@ -52,6 +53,7 @@ func JoinChatRoom(ctx context.Context, ps *pubsub.PubSub,
 		self:     selfID,
 		nick:     nickname,
 		roomName: roomName,
+		Messages: make(chan *ChatMessage, ChatRoomBufSize),
 	}
 
 	go chatroom.readLoop()
@@ -70,6 +72,7 @@ func (chatroom *ChatRoom) readLoop() {
 			close(chatroom.Messages)
 			return
 		}
+		log.Printf("[chatroom] receive msg: %s", msg.Data)
 
 		// 过滤掉自己发出的消息
 		if msg.ReceivedFrom == chatroom.self {
@@ -83,6 +86,7 @@ func (chatroom *ChatRoom) readLoop() {
 			continue
 		}
 		chatroom.Messages <- cm
+		log.Printf("[chatroom] put msg(`%s`) into chan", msg.Data)
 	}
 }
 

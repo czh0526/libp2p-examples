@@ -5,6 +5,7 @@ import (
 	"github.com/gdamore/tcell/v2"
 	"github.com/rivo/tview"
 	"io"
+	"log"
 	"time"
 )
 
@@ -95,6 +96,7 @@ func (ui *ChatUI) handleEvents() {
 		select {
 		case input := <-ui.inputCh: // 读取用户输入
 			{
+				log.Printf("[ui] read input: %s", input)
 				err := ui.chatroom.Publish(input)
 				if err != nil {
 					printErr("publish error: %s", err)
@@ -103,18 +105,22 @@ func (ui *ChatUI) handleEvents() {
 			}
 		case m := <-ui.chatroom.Messages: // 读取聊天室内容
 			{
+				log.Printf("[ui] receive msg: %s", m)
 				ui.displayChatMessage(m)
 			}
 		case <-peerRefreshTicker.C:
 			{
+				log.Println("[ui] refresh peer list")
 				ui.refreshPeers()
 			}
 		case <-ui.chatroom.ctx.Done(): // 聊天室结束
 			{
+				log.Println("[ui] chatroom done")
 				return
 			}
 		case <-ui.doneCh: // 用户退出
 			{
+				log.Println("[ui] ui done")
 				return
 			}
 		}
