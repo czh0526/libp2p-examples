@@ -4,5 +4,7 @@ relay/relay/relay
 relay/client/client
 chat-with-rendezvous/chat
 pubsub/chat/chat
+pubsyb/chat/*.log
 pubsub/chat-with-rendezvous/chat
 pubsub/my-chat/my-chat
+pubsub/my-chat/*.log
