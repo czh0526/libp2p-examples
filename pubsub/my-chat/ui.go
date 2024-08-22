@@ -30,6 +30,7 @@ func NewChatUI(chatroom *ChatRoom) *ChatUI {
 	peersList := tview.NewTextView()
 	peersList.SetBorder(true)
 	peersList.SetTitle("Peers")
+	peersList.SetChangedFunc(func() { app.Draw() })
 
 	chatPanel := tview.NewFlex().
 		AddItem(msgBox, 0, 1, false).
