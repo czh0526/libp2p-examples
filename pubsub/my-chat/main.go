@@ -4,6 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
+	"github.com/czh0526/libp2p-examples/pubsub/my-chat/account"
 	"github.com/libp2p/go-libp2p"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -26,8 +27,16 @@ func main() {
 	flag.Parse()
 	ctx := context.Background()
 
+	// 加载账号信息
+	privKey, err := account.LoadPrivateKey()
+	if err != nil {
+		panic(fmt.Sprintf("cannot load priv_key.pem， err = %v", err))
+	}
+
 	// 创建主机
-	h, err := libp2p.New(libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"))
+	h, err := libp2p.New(
+		libp2p.Identity(privKey),
+		libp2p.ListenAddrStrings("/ip4/0.0.0.0/tcp/0"))
 	if err != nil {
 		panic(fmt.Sprintf("构建host失败，err = %v", err))
 	}
