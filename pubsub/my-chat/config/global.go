@@ -28,4 +28,5 @@ func init() {
 var (
 	HomeDir    string
 	AccountDir = "data/account"
+	FriendsDir = "data/friends"
 )

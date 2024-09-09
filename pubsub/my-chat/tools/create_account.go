@@ -8,19 +8,23 @@ import (
 )
 
 var (
-	nicknameFlag = flag.String("nick", "", "nickname to use in chat")
-	phoneFlag    = flag.String("phone", "", "phone to use in chat")
+	nicknameFlag   = flag.String("nick", "", "nickname to use in chat")
+	phoneFlag      = flag.String("phone", "", "phone to use in chat")
+	passphraseFlag = flag.String("passphrase", "", "passphrase to use in login")
 )
 
 type Argument struct {
-	Nickname string
-	Phone    string
+	Nickname   string
+	Phone      string
+	Passphrase string
 }
 
 func getArguments() (*Argument, error) {
 	flag.Parse()
 	nickname := *nicknameFlag
 	phone := *phoneFlag
+	passphrase := *passphraseFlag
+
 	if len(nickname) == 0 {
 		return nil, fmt.Errorf("nickname is required")
 	}
@@ -29,8 +33,9 @@ func getArguments() (*Argument, error) {
 	}
 
 	return &Argument{
-		Nickname: nickname,
-		Phone:    phone,
+		Nickname:   nickname,
+		Phone:      phone,
+		Passphrase: passphrase,
 	}, nil
 }
 
@@ -41,7 +46,7 @@ func main() {
 		os.Exit(1)
 	}
 
-	_, id, err := account.CreateAccount(args.Nickname, args.Phone)
+	_, id, err := account.CreateAccount(args.Nickname, args.Phone, args.Passphrase)
 	if err != nil {
 		fmt.Printf("创建账户出错，%v \n", err)
 		os.Exit(1)

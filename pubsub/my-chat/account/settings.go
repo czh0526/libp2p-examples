@@ -21,8 +21,9 @@ type Settings struct {
 }
 
 type Account struct {
-	Id    string `json:"id"`
-	Phone string `json:"phone"`
+	Id       string `json:"id"`
+	Phone    string `json:"phone"`
+	Nickname string `json:"nickname,omitempty"`
 }
 
 func getSettingsFile() (io.ReadWriteCloser, error) {
