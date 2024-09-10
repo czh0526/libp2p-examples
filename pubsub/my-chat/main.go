@@ -4,7 +4,7 @@ import (
 	"context"
 	"flag"
 	"fmt"
-	"github.com/czh0526/libp2p-examples/pubsub/my-chat/account"
+	"github.com/czh0526/libp2p-examples/pubsub/my-chat/global"
 	"github.com/libp2p/go-libp2p"
 	dht "github.com/libp2p/go-libp2p-kad-dht"
 	pubsub "github.com/libp2p/go-libp2p-pubsub"
@@ -20,17 +20,47 @@ import (
 
 var (
 	nickFlag = flag.String("nick", "", "nickname to use in chat")
+	passFlag = flag.String("pass", "", "password to use in login")
 	roomFlag = flag.String("room", "awesome-chat-room", "name of chat room to join")
 )
+
+func loadMyData(nickname string) error {
+
+	myAccount, err := global.GetMyAccount(nickname)
+	if err != nil {
+		return err
+	}
+
+	_, err = global.GetMyFriends(myAccount.Id)
+	if err != nil {
+		return err
+	}
+
+	_, err = global.GetMyGroups(myAccount.Id)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
 
 func main() {
 	flag.Parse()
 	ctx := context.Background()
 
+	nickname := *nickFlag
+	passphrase := *passFlag
+	room := *roomFlag
+
 	// 加载账号信息
-	privKey, err := account.LoadPrivateKey()
+	err := loadMyData(nickname)
 	if err != nil {
-		panic(fmt.Sprintf("cannot load priv_key.pem， err = %v", err))
+		panic(fmt.Sprintf("加载数据出错: %v", err))
+	}
+
+	privKey, err := global.GetPrivateKey(passphrase)
+	if err != nil {
+		panic(fmt.Sprintf("加载数据出错: %v", err))
 	}
 
 	// 创建主机
@@ -58,12 +88,6 @@ func main() {
 	if err != nil {
 		panic(fmt.Sprintf("创建GossipSub失败，err = %v", err))
 	}
-
-	nickname := *nickFlag
-	if len(nickname) == 0 {
-		nickname = shortID(h.ID())
-	}
-	room := *roomFlag
 
 	// 创建聊天室
 	chatroom, err := JoinChatRoom(ctx, ps, h.ID(), nickname, room)

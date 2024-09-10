@@ -1,0 +1,25 @@
+version: "0.1"
+database: # consult[https://gorm.io/docs/connecting_to_the_database.html]"
+  db: "sqlite"
+  dsn: "./db/my-chat.db"
+  # input mysql or postgres or sqlite or sqlserver. consult[https://gorm.io/docs/connecting_to_the_database.html]
+  # enter the required data table or leave it blank.You can input : orders,users,goods
+  tables:
+    - "accounts"
+    - "friends"
+    - "groups"
+
+  # specify a directory for output
+  outPath: "./db/dao"
+  # query code file name, default: gen.go
+  outFile: "query.go"
+  # generate unit test for query code
+  withUnitTest: true
+  # generated model code's package name
+  modelPkgName: "model"
+  # generate with pointer when field is nullable
+  fieldNullable: false
+  # generate field with gorm index tag
+  fieldWithIndexTag: true
+  # generate field with gorm column type tag
+  fieldWithTypeTag: false
